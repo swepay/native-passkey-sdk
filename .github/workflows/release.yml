@@ -1,0 +1,105 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    name: Publish to npm via Changesets
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    permissions:
+      contents: write       # para criar commits de versão e tags git
+      pull-requests: write  # para abrir o PR "Version Packages"
+      id-token: write       # para npm provenance (--provenance)
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # Token com permissão de criar PR e commitar — necessário para
+          # o Changesets Action abrir o "Version Packages" PR
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          # Configura o registry para publicação autenticada
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Cache Turborepo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ runner.os }}-
+
+      - name: Build all packages
+        run: pnpm build
+
+      # ─── Changesets Action ───────────────────────────────────────────────────
+      # Comportamento:
+      #   - Se há changesets pendentes em .changeset/:
+      #       → Abre (ou atualiza) um PR chamado "Version Packages"
+      #         com os bumps de versão e changelogs gerados
+      #   - Se o "Version Packages" PR foi mergeado (changesets consumidos):
+      #       → Executa `pnpm changeset publish` (publica no npm)
+      #       → Cria tags git para cada pacote publicado (ex: @nativeguard/passkey@1.2.0)
+      # ────────────────────────────────────────────────────────────────────────
+      - name: Create Release PR or Publish to npm
+        uses: changesets/action@v1
+        with:
+          # Comando de publicação — roda apenas quando o PR de versão é mergeado
+          publish: pnpm changeset publish --provenance
+          # Mensagem do commit de versão gerado pelo changeset
+          commit: "chore(release): version packages"
+          # Título do PR de versão
+          title: "chore(release): version packages"
+        env:
+          # Token npm com permissão de publicar no escopo @nativeguard
+          # Configure em: https://www.npmjs.com/settings/<user>/tokens
+          # Adicione como secret: Settings → Secrets → NPM_TOKEN
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ─── Notificação de Release ──────────────────────────────────────────────
+      # Cria GitHub Release com as notas do changelog para cada pacote publicado
+      - name: Get published versions
+        id: versions
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          echo "packages=${{ steps.changesets.outputs.publishedPackages }}" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Releases
+        if: steps.changesets.outputs.published == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const packages = JSON.parse('${{ steps.changesets.outputs.publishedPackages }}');
+            for (const pkg of packages) {
+              await github.rest.repos.createRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag_name: `${pkg.name}@${pkg.version}`,
+                name: `${pkg.name} v${pkg.version}`,
+                generate_release_notes: true,
+              });
+            }

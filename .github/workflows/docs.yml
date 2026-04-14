@@ -1,0 +1,97 @@
+name: Docs (GitHub Pages)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      # Rebuilda apenas quando docs ou pacotes mudarem
+      - "apps/docs/**"
+      - "packages/core/src/**"
+      - "packages/angular/projects/**"
+      - "packages/react/src/**"
+      - ".github/workflows/docs.yml"
+  # Permite trigger manual pelo GitHub Actions UI
+  workflow_dispatch:
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write        # necessário para deploy no GitHub Pages
+  id-token: write     # necessário para autenticação OIDC do Pages
+
+jobs:
+  # ─────────────────────────────────────────────
+  # Build VitePress
+  # ─────────────────────────────────────────────
+  build:
+    name: Build Docs
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # necessário para lastUpdated (git log por arquivo)
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Cache Turborepo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-docs-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            turbo-docs-${{ runner.os }}-
+
+      # Garante que os pacotes estão buildados antes do VitePress
+      # (config.ts lê versão dos packages)
+      - name: Build packages
+        run: pnpm build
+
+      - name: Build docs site
+        run: pnpm --filter docs build
+        env:
+          # Passa a versão raiz para o VitePress config.ts
+          npm_package_version: ${{ github.ref_name }}
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/docs/.vitepress/dist
+
+  # ─────────────────────────────────────────────
+  # Deploy para GitHub Pages
+  # ─────────────────────────────────────────────
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

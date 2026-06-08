@@ -16,6 +16,7 @@
       "inputs": ["src/**", "tests/**"]
     },
     "lint": {
+      "dependsOn": ["^build"],
       "inputs": ["src/**", "projects/**"]
     },
     "clean": {

@@ -1,5 +1,9 @@
 packages:
   - "packages/*"
+  # biblioteca Angular publicável (@nativeguard/passkey-angular) — fica aninhada
+  # sob o workspace-root passkey-angular-workspace; precisa estar no workspace
+  # para o Changesets gerenciar sua versão.
+  - "packages/angular/projects/*"
   - "apps/*"
   # native_passkey_flutter é um pacote Dart/pub.dev — não faz parte do
   # workspace npm/pnpm (publicado separadamente via .github/workflows/publish-flutter.yml).

@@ -50,8 +50,8 @@ jobs:
           restore-keys: |
             turbo-${{ runner.os }}-
 
-      - name: Build all packages
-        run: pnpm build
+      - name: Build packages (docs tem workflow próprio)
+        run: pnpm build --filter=!docs
 
       # ─── Changesets Action ───────────────────────────────────────────────────
       # Comportamento:

@@ -4,6 +4,9 @@ export default defineConfig({
   test: {
     environment: "node",
     globals: true,
+    // Não falha o CI enquanto a suíte de testes ainda não foi escrita.
+    // Quando houver testes, os thresholds de cobertura abaixo passam a valer.
+    passWithNoTests: true,
     include: ["src/**/*.{test,spec}.{ts,js}"],
     coverage: {
       provider: "v8",

@@ -56,3 +56,6 @@ coverage/
 # ── VitePress (docs) ──────────────────────────────────────────────────────────
 apps/docs/.vitepress/dist/
 apps/docs/.vitepress/cache/
+
+# Next.js generated
+next-env.d.ts

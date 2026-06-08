@@ -23,6 +23,9 @@ importers:
       '@nativeguard/passkey-react':
         specifier: workspace:*
         version: link:../../packages/react
+      jose:
+        specifier: ^5.9.0
+        version: 5.10.0
       next:
         specifier: ^15.0.0
         version: 15.5.15(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.99.0)

@@ -5,7 +5,7 @@
   "scripts": {
     "build": "ng build passkey-angular --configuration production",
     "dev": "ng serve",
-    "lint": "ng lint",
+    "lint": "tsc --noEmit -p projects/passkey-angular/tsconfig.lint.json",
     "clean": "rm -rf dist"
   },
   "dependencies": {

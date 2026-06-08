@@ -49,11 +49,12 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
-      - name: Build all packages
-        run: pnpm build
+      - name: Build packages (docs tem workflow próprio)
+        run: pnpm build --filter=!docs
 
       - name: Test (core + react)
-        run: pnpm test -- --coverage
+        # `--` extra encaminha --coverage ao vitest através do turbo
+        run: pnpm exec turbo run test -- --coverage
 
       - name: Upload coverage
         uses: actions/upload-artifact@v4

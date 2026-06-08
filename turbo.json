@@ -1,0 +1,25 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["src/**", "projects/**", "package.json", "tsconfig*.json", "tsup.config.ts", "ng-package.json"],
+      "outputs": ["dist/**", ".next/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "inputs": ["src/**", "tests/**"]
+    },
+    "lint": {
+      "inputs": ["src/**", "projects/**"]
+    },
+    "clean": {
+      "cache": false
+    }
+  }
+}

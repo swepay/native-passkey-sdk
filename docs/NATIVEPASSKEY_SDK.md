@@ -299,7 +299,7 @@ export default defineConfig({
 export interface NativePasskeyConfig {
   /** projectId do NativePasskey (ex: "proj_abc123") */
   projectId: string;
-  /** URL base da API. Default: "https://passkey.nativeguard.io" */
+  /** URL base da API. Default: "https://api-passkey.swepay.com.br" */
   apiBaseUrl?: string;
 }
 
@@ -490,7 +490,7 @@ export class NativePasskeyClient {
 
   constructor(config: NativePasskeyConfig) {
     this.projectId = config.projectId;
-    this.baseUrl = `${config.apiBaseUrl ?? 'https://passkey.nativeguard.io'}/v1/projects/${config.projectId}`;
+    this.baseUrl = `${config.apiBaseUrl ?? 'https://api-passkey.swepay.com.br'}/v1/projects/${config.projectId}`;
   }
 
   /** Detecta suporte biométrico no dispositivo atual. SSR-safe. */
@@ -1128,94 +1128,63 @@ export type {
 } from '@nativeguard/passkey';
 ```
 
-### Flutter — `packages/angular/flutter/lib/passkey_webview.dart`
+### Flutter — `packages/flutter` → `native_passkey_flutter` (pub.dev)
+
+SDK Flutter **híbrido** publicado no pub.dev (não faz parte do workspace npm/pnpm).
+Em vez de um simples wrapper WebView, é um plugin federado com API Dart de primeira
+classe que espelha o contrato de `@nativeguard/passkey`:
+
+- **Caminho nativo** — cerimônia WebAuthn local via **Android Credential Manager**
+  (Kotlin, API 28+) e **iOS ASAuthorization** (Swift, iOS 16+). A camada nativa só
+  produz a attestation/assertion; toda a validação criptográfica fica no backend.
+- **Fallback WebView** — quando não há autenticador de plataforma e `webFallbackUrl`
+  está configurado, abre `PasskeyWebView` (evolução do antigo wrapper), que carrega
+  o app Angular/React e devolve o resultado pela bridge JS (`FlutterChannel`).
+
+```
+packages/flutter/
+├── pubspec.yaml                  # name: native_passkey_flutter (plugin android+ios)
+├── lib/
+│   ├── native_passkey_flutter.dart           # barrel (API pública)
+│   └── src/
+│       ├── native_passkey.dart               # NativePasskey (orquestrador híbrido)
+│       ├── native_passkey_config.dart        # default: https://api-passkey.swepay.com.br
+│       ├── models/                           # espelham core/src/types.ts
+│       ├── api/passkey_api_client.dart        # begin/finish/list/revoke (package:http)
+│       ├── platform/                         # platform interface + MethodChannel
+│       └── webview/passkey_webview.dart       # fallback WebView + bridge
+├── android/  kotlin/io/nativeguard/passkey/NativePasskeyPlugin.kt
+├── ios/      Classes/NativePasskeyPlugin.swift
+├── example/  app de demonstração
+└── test/     testes unitários (models, api client, lógica híbrida)
+```
+
+API pública:
 
 ```dart
-// packages/angular/flutter/lib/passkey_webview.dart
-import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+final passkey = NativePasskey(
+  const NativePasskeyConfig(
+    projectId: 'proj_abc123',
+    webFallbackUrl: 'https://sso.swepay.com.br/passkey', // opcional
+  ),
+);
 
-class PasskeyWebView extends StatefulWidget {
-  final String angularUrl;
-  final void Function(String jwt, String userId) onAuthenticated;
-  final void Function(String credentialId) onRegistered;
-  final void Function(String error) onError;
+await passkey.register(
+  const RegisterPasskeyOptions(
+    externalUserId: 'user_123',
+    userDisplayName: 'Ada Lovelace',
+    deviceName: 'iPhone 16 Pro',
+  ),
+  context: context, // necessário só para o fallback WebView
+);
 
-  const PasskeyWebView({
-    super.key,
-    required this.angularUrl,
-    required this.onAuthenticated,
-    required this.onRegistered,
-    required this.onError,
-  });
-
-  @override
-  State<PasskeyWebView> createState() => _PasskeyWebViewState();
-}
-
-class _PasskeyWebViewState extends State<PasskeyWebView> {
-  InAppWebViewController? _ctrl;
-
-  @override
-  Widget build(BuildContext context) {
-    return InAppWebView(
-      initialUrlRequest: URLRequest(url: WebUri(widget.angularUrl)),
-      initialSettings: InAppWebViewSettings(
-        javaScriptEnabled: true,
-        allowsInlineMediaPlayback: true,
-        javaScriptCanOpenWindowsAutomatically: true,
-        // CRÍTICO: identifica o contexto Flutter no Angular
-        userAgent: 'Mozilla/5.0 FlutterWebView/1.0',
-      ),
-      onWebViewCreated: (ctrl) {
-        _ctrl = ctrl;
-        ctrl.addJavaScriptHandler(
-          handlerName: 'FlutterChannel',
-          callback: (args) {
-            if (args.isEmpty) return;
-            final msg = jsonDecode(args[0] as String) as Map<String, dynamic>;
-            final type = msg['type'] as String?;
-            final payload = msg['payload'] as Map<String, dynamic>?;
-            switch (type) {
-              case 'passkey_authenticated':
-                widget.onAuthenticated(
-                  payload?['assertionJwt'] as String? ?? '',
-                  payload?['externalUserId'] as String? ?? '',
-                );
-              case 'passkey_registered':
-                widget.onRegistered(payload?['credentialId'] as String? ?? '');
-              case 'passkey_error':
-                widget.onError(payload?['error'] as String? ?? 'unknown_error');
-            }
-          },
-        );
-      },
-    );
-  }
-}
+final auth = await passkey.authenticate(context: context);
+// auth.assertionJwt → validar no backend via JWKS
 ```
 
-### `packages/angular/flutter/pubspec.yaml`
-
-```yaml
-name: native_passkey_flutter
-description: Flutter WebView wrapper for @nativeguard/passkey-angular
-
-environment:
-  sdk: '>=3.3.0 <4.0.0'
-  flutter: '>=3.19.0'
-
-dependencies:
-  flutter:
-    sdk: flutter
-  flutter_inappwebview: ^6.1.0
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^4.0.0
-```
+> **Nota de host:** o default de `apiBaseUrl` em todos os pacotes (core/angular/react/flutter)
+> é `https://api-passkey.swepay.com.br` (host real do backend Passkey da Swepay).
+> O valor legado `https://api-passkey.swepay.com.br` foi removido.
 
 ---
 
@@ -1595,7 +1564,7 @@ export class PasskeyVerifier {
   private readonly audience: string;
 
   constructor(config: { projectId: string; apiBaseUrl?: string; audience: string }) {
-    const base = config.apiBaseUrl ?? 'https://passkey.nativeguard.io';
+    const base = config.apiBaseUrl ?? 'https://api-passkey.swepay.com.br';
     this.jwks = createRemoteJWKSet(
       new URL(`${base}/v1/projects/${config.projectId}/.well-known/jwks.json`),
       { cooldownDuration: 300_000 }  // cache JWKS por 5 minutos

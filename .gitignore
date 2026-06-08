@@ -1,0 +1,58 @@
+# ── Dependências ──────────────────────────────────────────────────────────────
+node_modules/
+.pnpm-store/
+
+# ── Build outputs ─────────────────────────────────────────────────────────────
+dist/
+.next/
+out/
+
+# ── Turbo cache ───────────────────────────────────────────────────────────────
+.turbo/
+
+# ── Angular cache ─────────────────────────────────────────────────────────────
+.angular/
+
+# ── Flutter / Dart ────────────────────────────────────────────────────────────
+.dart_tool/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+
+# ── TypeScript ────────────────────────────────────────────────────────────────
+*.tsbuildinfo
+
+# ── Variáveis de ambiente ─────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── Editores ──────────────────────────────────────────────────────────────────
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Testes / cobertura ────────────────────────────────────────────────────────
+coverage/
+.nyc_output/
+
+# ── VitePress (docs) ──────────────────────────────────────────────────────────
+apps/docs/.vitepress/dist/
+apps/docs/.vitepress/cache/

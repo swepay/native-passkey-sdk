@@ -34,6 +34,40 @@ Mudanças de API pública exigem:
 - Atualização de `CHANGELOG.md` sob seção "Breaking Changes".
 - Onde existir `PublicAPI.Shipped.txt`, atualizar e justificar.
 
+## Releases
+
+O monorepo tem **dois fluxos de publicação independentes**:
+
+### npm — pacotes TypeScript (`@nativeguard/passkey`, `-angular`, `-react`)
+
+Versionados em conjunto via **Changesets** (`fixed`):
+
+1. `pnpm changeset` — descreva a mudança e selecione os 3 pacotes.
+2. Comite o `.changeset/*.md` junto do PR.
+3. Ao mergear em `main`, `.github/workflows/release.yml` abre o PR "Version Packages";
+   ao mergear esse PR, publica no npm com `--provenance`.
+
+### pub.dev — `native_passkey_flutter` (Flutter)
+
+Versionado **separadamente** (não entra no Changesets) e publicado via **GitHub
+Actions OIDC** — sem tokens de longa duração:
+
+1. Atualize a versão em `packages/flutter/pubspec.yaml` e adicione uma entrada em
+   `packages/flutter/CHANGELOG.md`.
+2. Garanta CI verde: na pasta `packages/flutter`, rode
+   `flutter pub get && dart format --output=none --set-exit-if-changed . && flutter analyze && flutter test && flutter pub publish --dry-run`.
+3. Crie e empurre a tag no formato exato esperado pelo pub.dev:
+   ```bash
+   git tag native_passkey_flutter-v0.1.0
+   git push origin native_passkey_flutter-v0.1.0
+   ```
+4. A tag dispara `.github/workflows/publish-flutter.yml`, que publica via OIDC.
+
+> **Pré-requisito (uma vez):** no pub.dev, página do package → Admin →
+> *Automated publishing* → habilitar para o repositório `swepay/native-passkey-sdk`
+> com tag pattern `native_passkey_flutter-v{{version}}`. A versão do `pubspec.yaml`
+> deve casar com a tag.
+
 ## Licença
 
 Ao contribuir, você concorda que sua contribuição será licenciada sob os mesmos termos do projeto (ver `LICENSE`).

@@ -1,0 +1,63 @@
+name: Publish Flutter (pub.dev)
+
+# Publica o pacote `native_passkey_flutter` no pub.dev via OIDC (sem tokens
+# de longa duração).
+#
+# Pré-requisitos (uma vez):
+#   1. O package já deve existir no pub.dev (faça o 1º publish manualmente).
+#   2. pub.dev → página do package → Admin → "Automated publishing"
+#      → Enable publishing from GitHub Actions:
+#        - Repository:    swepay/native-passkey-sdk
+#        - Tag pattern:   native_passkey_flutter-v{{version}}
+#   3. (Opcional) Se marcar "Require GitHub Actions environment" no pub.dev,
+#      descomente a chave `environment:` abaixo com o mesmo nome.
+#
+# Disparo: push de uma tag `native_passkey_flutter-vX.Y.Z` cuja versão casa
+# com `packages/flutter/pubspec.yaml`.
+#   git tag native_passkey_flutter-v0.1.0
+#   git push origin native_passkey_flutter-v0.1.0
+
+on:
+  push:
+    tags:
+      - "native_passkey_flutter-v[0-9]+.[0-9]+.[0-9]+"
+
+jobs:
+  publish:
+    name: pub.dev publish (OIDC)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    # Necessário para a autenticação OIDC com o pub.dev.
+    permissions:
+      id-token: write
+      contents: read
+
+    # Descomente se habilitar "Require GitHub Actions environment" no pub.dev:
+    # environment: pub.dev
+
+    defaults:
+      run:
+        working-directory: packages/flutter
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Validate (dry-run)
+        run: flutter pub publish --dry-run
+
+      # O pub client faz a troca do token OIDC automaticamente quando
+      # `id-token: write` está presente e o automated publishing está
+      # configurado no pub.dev para esta tag.
+      - name: Publish to pub.dev
+        run: flutter pub publish --force

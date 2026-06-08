@@ -1,0 +1,6 @@
+packages:
+  - "packages/*"
+  - "apps/*"
+  # native_passkey_flutter é um pacote Dart/pub.dev — não faz parte do
+  # workspace npm/pnpm (publicado separadamente via .github/workflows/publish-flutter.yml).
+  - "!packages/flutter"

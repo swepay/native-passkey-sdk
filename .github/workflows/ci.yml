@@ -39,7 +39,7 @@ jobs:
 
       # Cache Turborepo entre runs — acelera builds incrementais
       - name: Cache Turborepo
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .turbo
           key: turbo-${{ runner.os }}-${{ github.sha }}

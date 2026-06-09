@@ -3,7 +3,7 @@ description: >-
   SDK Flutter híbrido de autenticação WebAuthn/FIDO2 (Passkey) do ecossistema
   Swepay / NativeGuard. Usa passkey nativo (Android Credential Manager / iOS
   ASAuthorization) com fallback automático para WebView.
-version: 0.1.0
+version: 0.1.1
 homepage: https://swepay.github.io/native-passkey-sdk/
 repository: https://github.com/swepay/native-passkey-sdk
 issue_tracker: https://github.com/swepay/native-passkey-sdk/issues

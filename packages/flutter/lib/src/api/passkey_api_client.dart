@@ -151,7 +151,26 @@ class PasskeyApiClient {
     String? code;
     try {
       final body = jsonDecode(res.body) as Map<String, dynamic>;
-      code = body['error'] as String?;
+      // Contrato atual: {"error":"<code>","details":"<code>"}.
+      // Fallbacks p/ variações: ProblemDetails RFC7807 ({"code":...} ou
+      // {"type":".../errors/<code>"}). Escolhe o 1º candidato que mapeia para
+      // um código conhecido; senão, o 1º não-nulo (preserva o texto cru).
+      final candidates = <String?>[
+        body['error'] as String?,
+        body['details'] as String?,
+        body['code'] as String?,
+        (body['type'] is String)
+            ? (body['type'] as String).split('/').last
+            : null,
+      ];
+      for (final c in candidates) {
+        if (c != null &&
+            PasskeyErrorCode.fromWire(c) != PasskeyErrorCode.unknownError) {
+          code = c;
+          break;
+        }
+      }
+      code ??= candidates.firstWhere((c) => c != null, orElse: () => null);
     } catch (_) {
       // corpo não-JSON; mantém code nulo
     }

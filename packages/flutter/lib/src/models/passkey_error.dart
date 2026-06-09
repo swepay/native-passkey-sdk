@@ -6,6 +6,12 @@ enum PasskeyErrorCode {
   /// Usuário cancelou a cerimônia de biometria (ou `NotAllowedError` na web).
   userCancelled('user_cancelled'),
 
+  /// Requisição inválida (campos ausentes/malformados) — validação do backend.
+  invalidRequest('invalid_request'),
+
+  /// O `clientDataJSON` recebido não é um JSON válido.
+  invalidClientDataJson('invalid_client_data_json'),
+
   /// O challenge expirou antes da conclusão.
   challengeExpired('challenge_expired'),
 

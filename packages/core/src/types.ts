@@ -69,6 +69,8 @@ export interface PasskeySupport {
 
 export type PasskeyErrorCode =
   | 'user_cancelled'
+  | 'invalid_request'
+  | 'invalid_client_data_json'
   | 'challenge_expired'
   | 'challenge_mismatch'
   | 'origin_not_allowed'

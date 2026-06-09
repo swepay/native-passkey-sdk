@@ -56,8 +56,17 @@ jobs:
       - name: Validate (dry-run)
         run: flutter pub publish --dry-run
 
-      # O pub client faz a troca do token OIDC automaticamente quando
-      # `id-token: write` está presente e o automated publishing está
-      # configurado no pub.dev para esta tag.
+      - name: Debug OIDC
+        run: |
+          echo "GITHUB_ACTIONS=$GITHUB_ACTIONS"
+          echo "ID token URL set: ${ACTIONS_ID_TOKEN_REQUEST_URL:+YES}"
+          echo "ID token request token set: ${ACTIONS_ID_TOKEN_REQUEST_TOKEN:+YES}"
+          dart --version
+
+      # `dart pub publish` (não `flutter pub publish`) faz a troca do token
+      # OIDC automaticamente em CI com `id-token: write` + automated publishing
+      # configurado no pub.dev. O `flutter pub publish` cai no OAuth interativo.
+      # `< /dev/null` é proteção: se cair no interativo, falha rápido em vez de
+      # travar 15 min esperando autorização.
       - name: Publish to pub.dev
-        run: flutter pub publish --force
+        run: dart pub publish --force < /dev/null

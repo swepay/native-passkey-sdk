@@ -40,7 +40,10 @@ jobs:
           registry-url: https://registry.npmjs.org
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        # --no-frozen-lockfile: o `changeset version` bumpa as versões dos
+        # package.json mas não regenera o pnpm-lock.yaml; com frozen o install
+        # falharia (ERR_PNPM_OUTDATED_LOCKFILE) a cada release.
+        run: pnpm install --no-frozen-lockfile
 
       - name: Cache Turborepo
         uses: actions/cache@v5

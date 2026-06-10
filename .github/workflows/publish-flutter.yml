@@ -63,10 +63,16 @@ jobs:
           echo "ID token request token set: ${ACTIONS_ID_TOKEN_REQUEST_TOKEN:+YES}"
           dart --version
 
-      # `dart pub publish` (não `flutter pub publish`) faz a troca do token
-      # OIDC automaticamente em CI com `id-token: write` + automated publishing
-      # configurado no pub.dev. O `flutter pub publish` cai no OAuth interativo.
-      # `< /dev/null` é proteção: se cair no interativo, falha rápido em vez de
-      # travar 15 min esperando autorização.
-      - name: Publish to pub.dev
-        run: dart pub publish --force < /dev/null
+      # A auto-detecção do OIDC não dispara (env OIDC presente, mas pub cai no
+      # OAuth). Fazemos a troca OIDC MANUAL: pega o token do GitHub com audience
+      # `pub.dev` e configura o pub com ele. `timeout` evita travar.
+      - name: Publish to pub.dev (OIDC manual)
+        run: |
+          set -euo pipefail
+          PUB_TOKEN=$(curl -sS \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=https://pub.dev" \
+            | jq -r '.value')
+          export PUB_TOKEN
+          dart pub token add https://pub.dev --env-var PUB_TOKEN
+          timeout 180 dart pub publish --force

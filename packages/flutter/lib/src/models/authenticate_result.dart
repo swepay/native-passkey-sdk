@@ -29,7 +29,8 @@ class AuthenticateResult {
   /// Constrói a partir do JSON de `/passkey/authenticate/finish`.
   factory AuthenticateResult.fromJson(Map<String, dynamic> json) {
     return AuthenticateResult(
-      success: json['success'] == true,
+      // O backend responde 2xx sem campo `success`; sucesso = veio o JWT.
+      success: json['assertionJwt'] != null || json['success'] == true,
       assertionJwt: json['assertionJwt'] as String?,
       externalUserId: json['externalUserId'] as String?,
       error: json['error'] == null

@@ -4,6 +4,15 @@ Todas as mudanças notáveis deste pacote são documentadas aqui.
 Segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [0.1.2] - 2026-06-09
+
+### Fixed
+- **Login/registro reportavam falha mesmo em sucesso.** `AuthenticateResult` e
+  `RegisterResult` derivavam `success` de um campo `success` que o backend não
+  envia (a resposta 2xx traz `assertionJwt`/`credentialId`). Agora o sucesso é
+  derivado da presença do campo-chave — corrige o caso do app ficar na tela de
+  login sem erro mesmo com a cerimônia bem-sucedida.
+
 ## [0.1.1] - 2026-06-09
 
 ### Added

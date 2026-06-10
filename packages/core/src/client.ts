@@ -66,7 +66,7 @@ export class NativePasskeyClient {
     }
 
     const response = credential.response as AuthenticatorAttestationResponse;
-    return this.post<RegisterResult>('/passkey/register/finish', {
+    const result = await this.post<RegisterResult>('/passkey/register/finish', {
       externalUserId: options.externalUserId,
       challengeId: begin.challengeId,
       clientDataJsonBase64Url: bufferToBase64Url(response.clientDataJSON),
@@ -74,6 +74,8 @@ export class NativePasskeyClient {
       deviceName: options.deviceName,
       transports: response.getTransports?.() ?? ['internal']
     });
+    // O backend responde 2xx sem campo `success`; sucesso = veio o credentialId.
+    return { ...result, success: result.success ?? Boolean(result.credentialId) };
   }
 
   // ── Autenticação ─────────────────────────────────────────────────────────
@@ -108,7 +110,7 @@ export class NativePasskeyClient {
     }
 
     const response = assertion.response as AuthenticatorAssertionResponse;
-    return this.post<AuthenticateResult>('/passkey/authenticate/finish', {
+    const result = await this.post<AuthenticateResult>('/passkey/authenticate/finish', {
       challengeId: begin.challengeId,
       credentialIdBase64Url: bufferToBase64Url(assertion.rawId),
       clientDataJsonBase64Url: bufferToBase64Url(response.clientDataJSON),
@@ -116,6 +118,8 @@ export class NativePasskeyClient {
       signatureBase64Url: bufferToBase64Url(response.signature),
       userHandleBase64Url: response.userHandle ? bufferToBase64Url(response.userHandle) : undefined
     });
+    // O backend responde 2xx sem campo `success`; sucesso = veio o assertionJwt.
+    return { ...result, success: result.success ?? Boolean(result.assertionJwt) };
   }
 
   // ── Gestão de credenciais (requer X-NativePasskey-ApiKey) ─────────────────

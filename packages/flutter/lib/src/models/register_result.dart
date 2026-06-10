@@ -31,7 +31,8 @@ class RegisterResult {
   /// Constrói a partir do JSON de `/passkey/register/finish`.
   factory RegisterResult.fromJson(Map<String, dynamic> json) {
     return RegisterResult(
-      success: json['success'] == true,
+      // O backend responde 2xx sem campo `success`; sucesso = veio o credentialId.
+      success: json['credentialId'] != null || json['success'] == true,
       credentialId: json['credentialId'] as String?,
       deviceName: json['deviceName'] as String?,
       registeredAt: json['registeredAt'] as String?,

@@ -4,10 +4,14 @@ import 'package:native_passkey_flutter/native_passkey_flutter.dart';
 void main() {
   group('PasskeyErrorCode', () {
     test('fromWire mapeia valores conhecidos', () {
-      expect(PasskeyErrorCode.fromWire('user_cancelled'),
-          PasskeyErrorCode.userCancelled);
-      expect(PasskeyErrorCode.fromWire('signature_verification_failed'),
-          PasskeyErrorCode.signatureVerificationFailed);
+      expect(
+        PasskeyErrorCode.fromWire('user_cancelled'),
+        PasskeyErrorCode.userCancelled,
+      );
+      expect(
+        PasskeyErrorCode.fromWire('signature_verification_failed'),
+        PasskeyErrorCode.signatureVerificationFailed,
+      );
     });
 
     test('fromWire cai em unknownError para valores desconhecidos/nulos', () {

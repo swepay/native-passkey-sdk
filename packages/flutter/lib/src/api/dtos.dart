@@ -82,8 +82,10 @@ class BeginRegistrationResponse {
           .toList(growable: false),
       excludeCredentials:
           (json['excludeCredentials'] as List<dynamic>? ?? const [])
-              .map((e) =>
-                  CredentialDescriptorDto.fromJson(e as Map<String, dynamic>))
+              .map(
+                (e) =>
+                    CredentialDescriptorDto.fromJson(e as Map<String, dynamic>),
+              )
               .toList(growable: false),
     );
   }
@@ -137,7 +139,8 @@ class BeginBiometricRecoveryRegistrationResponse {
 
   /// Constrói a partir de JSON.
   factory BeginBiometricRecoveryRegistrationResponse.fromJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return BeginBiometricRecoveryRegistrationResponse(
       recoveryGrantId: json['recoveryGrantId'] as String,
       expiresInSeconds: (json['expiresInSeconds'] as num).toInt(),
@@ -152,8 +155,10 @@ class BeginBiometricRecoveryRegistrationResponse {
           .toList(growable: false),
       excludeCredentials:
           (json['excludeCredentials'] as List<dynamic>? ?? const [])
-              .map((e) =>
-                  CredentialDescriptorDto.fromJson(e as Map<String, dynamic>))
+              .map(
+                (e) =>
+                    CredentialDescriptorDto.fromJson(e as Map<String, dynamic>),
+              )
               .toList(growable: false),
     );
   }
@@ -188,8 +193,9 @@ class BeginAuthResponse {
       challengeBase64Url: json['challengeBase64Url'] as String,
       rpId: json['rpId'] as String,
       allowCredentials: (json['allowCredentials'] as List<dynamic>? ?? const [])
-          .map((e) =>
-              CredentialDescriptorDto.fromJson(e as Map<String, dynamic>))
+          .map(
+            (e) => CredentialDescriptorDto.fromJson(e as Map<String, dynamic>),
+          )
           .toList(growable: false),
     );
   }

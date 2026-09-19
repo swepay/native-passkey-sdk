@@ -14,7 +14,7 @@ class PasskeyApiClient {
   /// Cria o cliente apontando para [projectBaseUrl]
   /// (`{apiBaseUrl}/v1/projects/{projectId}`).
   PasskeyApiClient({required this.projectBaseUrl, http.Client? httpClient})
-      : _http = httpClient ?? http.Client();
+    : _http = httpClient ?? http.Client();
 
   /// Base completa dos endpoints do projeto.
   final String projectBaseUrl;
@@ -65,16 +65,18 @@ class PasskeyApiClient {
   /// Troca uma asserção de recuperação biométrica (`purpose=Recovery`) por opções de
   /// registro WebAuthn autorizadas por um `PasskeyRecoveryGrant` de uso único (SPEC-passkey-0002).
   Future<BeginBiometricRecoveryRegistrationResponse>
-      beginBiometricRecoveryRegistration({required String assertion}) async {
-    final json = await _post('/passkey/recovery/biometric/registration-options', {
-      'assertion': assertion,
-    });
+  beginBiometricRecoveryRegistration({required String assertion}) async {
+    final json = await _post(
+      '/passkey/recovery/biometric/registration-options',
+      {'assertion': assertion},
+    );
     return BeginBiometricRecoveryRegistrationResponse.fromJson(json);
   }
 
   /// Inicia a autenticação. `externalUserId` nulo = discoverable credential.
-  Future<BeginAuthResponse> beginAuthentication(
-      {String? externalUserId}) async {
+  Future<BeginAuthResponse> beginAuthentication({
+    String? externalUserId,
+  }) async {
     final json = await _post('/passkey/authenticate/begin', {
       'externalUserId': externalUserId,
     });

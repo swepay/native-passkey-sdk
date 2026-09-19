@@ -99,7 +99,7 @@ enum PasskeyErrorCode {
 class PasskeyError implements Exception {
   /// Cria um [PasskeyError] com um [code] e uma [message] opcional.
   PasskeyError(this.code, [String? message])
-      : message = message ?? code.wireValue;
+    : message = message ?? code.wireValue;
 
   /// Código estruturado do erro.
   final PasskeyErrorCode code;

@@ -31,11 +31,11 @@
     "clean": "rm -rf dist"
   },
   "devDependencies": {
-    "@faker-js/faker": "^9.3.0",
-    "@vitest/coverage-v8": "^4.0.0",
-    "tsup": "^8.3.0",
-    "typescript": "~5.6.0",
-    "vitest": "^4.0.0"
+    "@faker-js/faker": "^10.6.0",
+    "@vitest/coverage-v8": "^4.1.11",
+    "tsup": "^8.5.1",
+    "typescript": "~5.6.3",
+    "vitest": "^4.1.11"
   },
   "sideEffects": false
 }

@@ -13,6 +13,34 @@ updates:
         update-types:
           - "minor"
           - "patch"
+      # vitest and @vitest/* must move together (a lone major of either breaks the run)
+      vitest:
+        patterns:
+          - "vitest"
+          - "@vitest/*"
+        update-types:
+          - "major"
+      test-stack-major:
+        patterns:
+          - "jsdom"
+          - "@faker-js/faker"
+          - "@testing-library/*"
+          - "msw"
+        update-types:
+          - "major"
+    # Angular 22, TypeScript 6/7 and @types/node 25 are deliberate, ecosystem-wide
+    # migrations (docs/security/dependency-audit-2026-09.md) — not automated bot PRs.
+    ignore:
+      - dependency-name: "@angular/*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@angular-devkit/*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "ng-packagr"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: "chore(deps)"
       include: "scope"
@@ -32,6 +60,12 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    # actions/checkout@v4-era majors are the ecosystem-pinned LTS versions (GS-01,
+    # docs/ecosystem-standardization.md §2.5) — major bumps go through a deliberate,
+    # coordinated upgrade across repos, not an automated PR.
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: "chore(deps)"
       include: "scope"

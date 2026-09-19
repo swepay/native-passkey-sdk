@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@nativeguard/passkey-react": "workspace:*",
-    "jose": "^5.10.0",
+    "jose": "^6.2.12",
     "next": "^15.5.25",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"

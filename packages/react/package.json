@@ -1,6 +1,6 @@
 {
   "name": "@nativeguard/passkey-react",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "NativePasskey React components, hooks and Next.js App Router integration",
   "type": "module",
   "main": "./dist/index.cjs",

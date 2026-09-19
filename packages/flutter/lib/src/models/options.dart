@@ -29,3 +29,23 @@ class AuthenticateOptions {
   /// Omitir = discoverable credential flow (passkey puro, sem digitar usuário).
   final String? externalUserId;
 }
+
+/// Parâmetros de registro de uma nova Passkey autorizado por uma asserção de
+/// recuperação biométrica (SPEC-passkey-0002).
+///
+/// Espelha `RegisterWithRecoveryAssertionOptions` do core TypeScript.
+class RegisterWithRecoveryAssertionOptions {
+  /// Cria as opções de registro por recuperação.
+  const RegisterWithRecoveryAssertionOptions({
+    required this.assertion,
+    required this.deviceName,
+  });
+
+  /// JWS compacto opaco emitido pelo Native Biometrics SDK (`purpose: 'recovery'`).
+  /// Nunca decodificado nem persistido por este SDK — só repassado ao backend
+  /// (ADR-0003: nenhum produto Swepay depende do código de outro).
+  final String assertion;
+
+  /// Label do novo dispositivo (ex.: "iPhone 16 Pro recuperado").
+  final String deviceName;
+}

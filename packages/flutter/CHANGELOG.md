@@ -4,6 +4,19 @@ Todas as mudanças notáveis deste pacote são documentadas aqui.
 Segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [Unreleased]
+
+### Added
+- `NativePasskey.registerWithRecoveryAssertion` (SPEC-passkey-0002) — registra uma passkey
+  nova a partir de uma asserção `purpose=Recovery` do Native Biometrics (string opaca, nunca
+  decodificada nem persistida por este pacote), para o caso de o usuário ter perdido o único
+  dispositivo. `PasskeyApiClient.beginBiometricRecoveryRegistration` e
+  `PasskeyApiClient.finishRegistration(recoveryGrantId: ...)`. Sete novos valores em
+  `PasskeyErrorCode` (`biometricRecoveryDisabled`, `invalidBiometricAssertion`,
+  `expiredBiometricAssertion`, `replayedBiometricAssertion`, `biometricPurposeMismatch`,
+  `unknownBiometricUser`, `invalidRecoveryGrant`). **Limitação:** só o caminho nativo hoje —
+  sem fallback WebView de recuperação (ver README).
+
 ## [0.1.2] - 2026-06-09
 
 ### Fixed

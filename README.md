@@ -279,6 +279,83 @@ if (auth.success) {
 }
 ```
 
+## Recover on a new device with a biometric assertion
+
+When a user loses their only device (and therefore their only passkey), they have no way
+left to prove who they are to your app. `registerWithRecoveryAssertion` closes that gap: it
+trades a `purpose=Recovery` biometric assertion — obtained from the standalone **Native
+Biometrics** product (`@swepay/biometrics-react`'s `useFaceVerification`, never from this
+SDK) — for a brand-new passkey, without asking the user for anything else.
+
+**1. Get a Recovery assertion from Native Biometrics** (a separate, independently-billed
+product — see ADR-0003; this SDK never imports it, it only accepts the resulting string):
+
+```tsx
+import { useFaceVerification } from '@swepay/biometrics-react';
+
+const { verify } = useFaceVerification({ purpose: 'recovery' });
+const assertion = await verify(); // opaque compact JWS — @nativeguard/passkey never decodes or stores it
+```
+
+**2. Exchange it for a new passkey.** Same shape as `registerPasskey`, minus
+`externalUserId`/`userDisplayName` — the backend resolves both from the verified assertion,
+never from the caller:
+
+```tsx
+'use client';
+import { usePasskey } from '@nativeguard/passkey-react';
+
+export function RecoverAccountButton({ assertion }: { assertion: string }) {
+  const { registerWithRecoveryAssertion, isLoading } = usePasskey();
+
+  const handleClick = async () => {
+    const result = await registerWithRecoveryAssertion({
+      assertion,
+      deviceName: 'iPhone 16 Pro (recovered)'
+    });
+    if (result.success) {
+      // result.credentialId — the user can sign in with the new device from now on
+    }
+  };
+
+  return <button onClick={handleClick} disabled={isLoading}>Recover my account</button>;
+}
+```
+
+**3. Handle the typed errors** — same `PasskeyError` hierarchy, seven new `PasskeyErrorCode`
+values specific to this flow (see table below):
+
+```tsx
+if (!result.success) {
+  switch (result.error?.code) {
+    case 'biometric_recovery_disabled': // project hasn't opted into Native Biometrics recovery
+    case 'invalid_biometric_assertion':
+    case 'expired_biometric_assertion':
+    case 'replayed_biometric_assertion':
+    case 'biometric_purpose_mismatch':
+    case 'unknown_biometric_user':
+    case 'invalid_recovery_grant': // the 5-minute single-use grant expired or was already used
+      // show a pedagogical message and let the user retry the biometric check
+  }
+}
+```
+
+### Reference
+
+- Available on core (`NativePasskeyClient.registerWithRecoveryAssertion`), React
+  (`usePasskey().registerWithRecoveryAssertion`) and Angular
+  (`NativePasskeyService.registerWithRecoveryAssertion`) — same call shape everywhere.
+- Flutter: native path only today (Android Credential Manager / iOS ASAuthorization); there is
+  no WebView fallback for this flow yet — see
+  [`packages/flutter/README.md`](packages/flutter/README.md).
+- The assertion is opaque and **never persisted** by this SDK — it is sent once to
+  `POST /passkey/recovery/biometric/registration-options` and discarded.
+- The `PasskeyRecoveryGrant` returned by that call is single-use and expires in 5 minutes; the
+  SDK passes it straight through to `register/finish` as `recoveryGrantId` — no extra call
+  needed on your side.
+- Backend contract: `SPEC-passkey-0002` in `native-passkey-backend` (`recovery/biometric`
+  problem+json error catalog under `https://errors.swepay.com.br/passly/biometric-recovery/*`).
+
 ## API de Referencia
 
 ### Core — `@nativeguard/passkey`
@@ -290,6 +367,7 @@ if (auth.success) {
 | `NativePasskeyConfig` | Configuracao do cliente |
 | `RegisterPasskeyOptions` | Opcoes de registro |
 | `RegisterResult` | Resultado do registro |
+| `RegisterWithRecoveryAssertionOptions` | Opcoes de registro por asserção de recuperação biométrica |
 | `AuthenticateOptions` | Opcoes de autenticacao |
 | `AuthenticateResult` | Resultado da autenticacao |
 | `PasskeyCredential` | Credencial armazenada |
@@ -302,6 +380,7 @@ if (auth.success) {
 class NativePasskeyClient {
   static isAvailable(): Promise<PasskeySupport>
   registerPasskey(options: RegisterPasskeyOptions): Promise<RegisterResult>
+  registerWithRecoveryAssertion(options: RegisterWithRecoveryAssertionOptions): Promise<RegisterResult>
   authenticateWithPasskey(options?: AuthenticateOptions): Promise<AuthenticateResult>
   listCredentials(externalUserId: string, apiKey: string): Promise<PasskeyCredential[]>
   revokeCredential(externalUserId: string, credentialId: string, apiKey: string): Promise<void>
@@ -324,6 +403,13 @@ class NativePasskeyClient {
 | `credential_already_registered` | Credencial ja registrada |
 | `project_not_found` | projectId invalido |
 | `network_error` | Erro de rede |
+| `biometric_recovery_disabled` | Projeto nao habilitou a recuperacao por biometria |
+| `invalid_biometric_assertion` | Assinatura/estrutura da asserção invalida, ou tenant/decisão incorretos |
+| `expired_biometric_assertion` | Asserção expirou ou está fora da janela de idade permitida |
+| `replayed_biometric_assertion` | Asserção já foi usada uma vez (replay) |
+| `biometric_purpose_mismatch` | Asserção não tem `purpose=Recovery` |
+| `unknown_biometric_user` | `user_ref` da asserção não é um `externalUserId` utilizável |
+| `invalid_recovery_grant` | Grant de recuperação ausente, expirado, já usado ou divergente |
 | `unknown_error` | Erro desconhecido |
 
 ## Variaveis de Ambiente

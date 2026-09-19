@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/widgets.dart';
 
 import 'api/dtos.dart';
@@ -95,7 +97,16 @@ class NativePasskey {
     );
 
     final native = await _platform.createCredential(
-      _toCreateOptions(begin, options.externalUserId),
+      _toCreateOptionsMap(
+        challengeBase64Url: begin.challengeBase64Url,
+        rpId: begin.rpId,
+        rpName: begin.rpName,
+        userIdBase64Url: begin.userIdBase64Url,
+        userName: options.externalUserId,
+        userDisplayName: begin.userDisplayName,
+        pubKeyCredParams: begin.pubKeyCredParams,
+        excludeCredentials: begin.excludeCredentials,
+      ),
     );
 
     final json = await _api.finishRegistration(
@@ -109,6 +120,77 @@ class NativePasskey {
               ?.map((e) => e as String)
               .toList(growable: false) ??
           const ['internal'],
+    );
+    return RegisterResult.fromJson(json);
+  }
+
+  // ── Recuperação de conta por asserção biométrica (SPEC-passkey-0002) ────────
+
+  /// Registra uma passkey nova quando o usuário perdeu o único dispositivo e não tem
+  /// mais nenhuma forma de provar quem é para o app cliente — troca uma asserção
+  /// `purpose=Recovery` do Native Biometrics (opaca; nunca decodificada aqui) por um
+  /// `PasskeyRecoveryGrant` de uso único e usa o autenticador de plataforma para criar
+  /// a credencial.
+  ///
+  /// Diferente de [register], este fluxo **não tem fallback WebView** hoje — a página
+  /// hospedada de recuperação é um follow-up separado (fora do escopo desta mudança);
+  /// sem autenticador de plataforma disponível, o resultado é
+  /// `PasskeyErrorCode.unsupported`.
+  Future<RegisterResult> registerWithRecoveryAssertion(
+    RegisterWithRecoveryAssertionOptions options,
+  ) async {
+    try {
+      final useNative = config.preferNative &&
+          await _platform.isPlatformAuthenticatorAvailable();
+      if (!useNative) {
+        return RegisterResult.failure(
+          PasskeyError(PasskeyErrorCode.unsupported),
+        );
+      }
+      return await _registerNativeWithRecoveryAssertion(options);
+    } on PasskeyError catch (err) {
+      return RegisterResult.failure(err);
+    }
+  }
+
+  Future<RegisterResult> _registerNativeWithRecoveryAssertion(
+    RegisterWithRecoveryAssertionOptions options,
+  ) async {
+    final begin = await _api.beginBiometricRecoveryRegistration(
+      assertion: options.assertion,
+    );
+
+    // O backend resolve o externalUserId a partir da própria asserção verificada
+    // (SPEC-passkey-0002 §3.2) e o codifica em userIdBase64Url — nunca pedimos esse
+    // dado ao chamador, que não tem como sabê-lo neste fluxo.
+    final externalUserId =
+        utf8.decode(base64Url.decode(base64Url.normalize(begin.userIdBase64Url)));
+
+    final native = await _platform.createCredential(
+      _toCreateOptionsMap(
+        challengeBase64Url: begin.challengeBase64Url,
+        rpId: begin.rpId,
+        rpName: begin.rpName,
+        userIdBase64Url: begin.userIdBase64Url,
+        userName: externalUserId,
+        userDisplayName: begin.userDisplayName,
+        pubKeyCredParams: begin.pubKeyCredParams,
+        excludeCredentials: begin.excludeCredentials,
+      ),
+    );
+
+    final json = await _api.finishRegistration(
+      externalUserId: externalUserId,
+      challengeId: begin.challengeId,
+      clientDataJsonBase64Url: native['clientDataJsonBase64Url'] as String,
+      attestationObjectBase64Url:
+          native['attestationObjectBase64Url'] as String,
+      deviceName: options.deviceName,
+      transports: (native['transports'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList(growable: false) ??
+          const ['internal'],
+      recoveryGrantId: begin.recoveryGrantId,
     );
     return RegisterResult.fromJson(json);
   }
@@ -190,19 +272,29 @@ class NativePasskey {
 
   // ── Mapeamento begin DTO → WebAuthn-JSON para a camada nativa ───────────────
 
-  Map<String, dynamic> _toCreateOptions(
-    BeginRegistrationResponse begin,
-    String userName,
-  ) {
+  /// Monta o WebAuthn-JSON de criação de credencial compartilhado por [_registerNative]
+  /// e [_registerNativeWithRecoveryAssertion] — as duas cerimônias são idênticas; o que
+  /// muda é de onde vêm os campos (`register/begin` vs
+  /// `recovery/biometric/registration-options`) e o valor de `userName`.
+  Map<String, dynamic> _toCreateOptionsMap({
+    required String challengeBase64Url,
+    required String rpId,
+    required String rpName,
+    required String userIdBase64Url,
+    required String userName,
+    required String userDisplayName,
+    required List<int> pubKeyCredParams,
+    required List<CredentialDescriptorDto> excludeCredentials,
+  }) {
     return <String, dynamic>{
-      'challengeBase64Url': begin.challengeBase64Url,
-      'rpId': begin.rpId,
-      'rpName': begin.rpName,
-      'userIdBase64Url': begin.userIdBase64Url,
+      'challengeBase64Url': challengeBase64Url,
+      'rpId': rpId,
+      'rpName': rpName,
+      'userIdBase64Url': userIdBase64Url,
       'userName': userName,
-      'userDisplayName': begin.userDisplayName,
-      'pubKeyCredParams': begin.pubKeyCredParams,
-      'excludeCredentials': begin.excludeCredentials
+      'userDisplayName': userDisplayName,
+      'pubKeyCredParams': pubKeyCredParams,
+      'excludeCredentials': excludeCredentials
           .map((c) => {
                 'credentialIdBase64Url': c.credentialIdBase64Url,
                 'transports': c.transports,

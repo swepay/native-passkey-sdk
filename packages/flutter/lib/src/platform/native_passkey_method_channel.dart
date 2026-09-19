@@ -9,14 +9,16 @@ import 'native_passkey_platform_interface.dart';
 /// canal `io.nativeguard.passkey/methods`.
 class MethodChannelNativePasskey extends NativePasskeyPlatform {
   /// Canal de métodos compartilhado com o código nativo.
-  static const MethodChannel channel =
-      MethodChannel('io.nativeguard.passkey/methods');
+  static const MethodChannel channel = MethodChannel(
+    'io.nativeguard.passkey/methods',
+  );
 
   @override
   Future<bool> isPlatformAuthenticatorAvailable() async {
     try {
-      final result =
-          await channel.invokeMethod<bool>('isPlatformAuthenticatorAvailable');
+      final result = await channel.invokeMethod<bool>(
+        'isPlatformAuthenticatorAvailable',
+      );
       return result ?? false;
     } on MissingPluginException {
       return false;
@@ -52,7 +54,9 @@ class MethodChannelNativePasskey extends NativePasskeyPlatform {
       );
       if (raw == null) {
         throw PasskeyError(
-            PasskeyErrorCode.unknownError, '$method retornou nulo');
+          PasskeyErrorCode.unknownError,
+          '$method retornou nulo',
+        );
       }
       return raw.map((key, value) => MapEntry(key as String, value));
     } on PlatformException catch (err) {

@@ -24,11 +24,13 @@ import 'webview/passkey_webview.dart';
 /// A API espelha o `NativePasskeyClient` do pacote `@nativeguard/passkey`.
 class NativePasskey {
   /// Cria o cliente a partir de uma [config].
-  NativePasskey(this.config,
-      {PasskeyApiClient? apiClient, NativePasskeyPlatform? platform})
-      : _api = apiClient ??
-            PasskeyApiClient(projectBaseUrl: config.projectBaseUrl),
-        _platform = platform ?? NativePasskeyPlatform.instance;
+  NativePasskey(
+    this.config, {
+    PasskeyApiClient? apiClient,
+    NativePasskeyPlatform? platform,
+  }) : _api =
+           apiClient ?? PasskeyApiClient(projectBaseUrl: config.projectBaseUrl),
+       _platform = platform ?? NativePasskeyPlatform.instance;
 
   /// Configuração ativa.
   final NativePasskeyConfig config;
@@ -66,7 +68,8 @@ class NativePasskey {
     BuildContext? context,
   }) async {
     try {
-      final useNative = config.preferNative &&
+      final useNative =
+          config.preferNative &&
           await _platform.isPlatformAuthenticatorAvailable();
 
       if (useNative) {
@@ -81,9 +84,7 @@ class NativePasskey {
           deviceName: options.deviceName,
         );
       }
-      return RegisterResult.failure(
-        PasskeyError(PasskeyErrorCode.unsupported),
-      );
+      return RegisterResult.failure(PasskeyError(PasskeyErrorCode.unsupported));
     } on PasskeyError catch (err) {
       return RegisterResult.failure(err);
     }
@@ -116,7 +117,8 @@ class NativePasskey {
       attestationObjectBase64Url:
           native['attestationObjectBase64Url'] as String,
       deviceName: options.deviceName,
-      transports: (native['transports'] as List<dynamic>?)
+      transports:
+          (native['transports'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList(growable: false) ??
           const ['internal'],
@@ -140,7 +142,8 @@ class NativePasskey {
     RegisterWithRecoveryAssertionOptions options,
   ) async {
     try {
-      final useNative = config.preferNative &&
+      final useNative =
+          config.preferNative &&
           await _platform.isPlatformAuthenticatorAvailable();
       if (!useNative) {
         return RegisterResult.failure(
@@ -163,8 +166,9 @@ class NativePasskey {
     // O backend resolve o externalUserId a partir da própria asserção verificada
     // (SPEC-passkey-0002 §3.2) e o codifica em userIdBase64Url — nunca pedimos esse
     // dado ao chamador, que não tem como sabê-lo neste fluxo.
-    final externalUserId =
-        utf8.decode(base64Url.decode(base64Url.normalize(begin.userIdBase64Url)));
+    final externalUserId = utf8.decode(
+      base64Url.decode(base64Url.normalize(begin.userIdBase64Url)),
+    );
 
     final native = await _platform.createCredential(
       _toCreateOptionsMap(
@@ -186,7 +190,8 @@ class NativePasskey {
       attestationObjectBase64Url:
           native['attestationObjectBase64Url'] as String,
       deviceName: options.deviceName,
-      transports: (native['transports'] as List<dynamic>?)
+      transports:
+          (native['transports'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList(growable: false) ??
           const ['internal'],
@@ -206,7 +211,8 @@ class NativePasskey {
     BuildContext? context,
   }) async {
     try {
-      final useNative = config.preferNative &&
+      final useNative =
+          config.preferNative &&
           await _platform.isPlatformAuthenticatorAvailable();
 
       if (useNative) {
@@ -295,10 +301,12 @@ class NativePasskey {
       'userDisplayName': userDisplayName,
       'pubKeyCredParams': pubKeyCredParams,
       'excludeCredentials': excludeCredentials
-          .map((c) => {
-                'credentialIdBase64Url': c.credentialIdBase64Url,
-                'transports': c.transports,
-              })
+          .map(
+            (c) => {
+              'credentialIdBase64Url': c.credentialIdBase64Url,
+              'transports': c.transports,
+            },
+          )
           .toList(growable: false),
       'userVerification': 'required',
       'authenticatorAttachment': 'platform',
@@ -312,10 +320,12 @@ class NativePasskey {
       'challengeBase64Url': begin.challengeBase64Url,
       'rpId': begin.rpId,
       'allowCredentials': begin.allowCredentials
-          .map((c) => {
-                'credentialIdBase64Url': c.credentialIdBase64Url,
-                'transports': c.transports,
-              })
+          .map(
+            (c) => {
+              'credentialIdBase64Url': c.credentialIdBase64Url,
+              'transports': c.transports,
+            },
+          )
           .toList(growable: false),
       'userVerification': 'required',
       'timeoutMs': 60000,

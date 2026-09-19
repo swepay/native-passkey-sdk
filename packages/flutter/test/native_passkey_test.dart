@@ -8,8 +8,11 @@ import 'package:native_passkey_flutter/src/api/passkey_api_client.dart';
 
 /// Plataforma fake controlável para os testes do orquestrador híbrido.
 class _FakePlatform extends NativePasskeyPlatform {
-  _FakePlatform(
-      {required this.available, this.createResponse, this.getResponse});
+  _FakePlatform({
+    required this.available,
+    this.createResponse,
+    this.getResponse,
+  });
 
   final bool available;
   final Map<String, dynamic>? createResponse;
@@ -23,14 +26,16 @@ class _FakePlatform extends NativePasskeyPlatform {
 
   @override
   Future<Map<String, dynamic>> createCredential(
-      Map<String, dynamic> options) async {
+    Map<String, dynamic> options,
+  ) async {
     createCalls++;
     return createResponse!;
   }
 
   @override
   Future<Map<String, dynamic>> getCredential(
-      Map<String, dynamic> options) async {
+    Map<String, dynamic> options,
+  ) async {
     getCalls++;
     return getResponse!;
   }
@@ -49,8 +54,11 @@ PasskeyApiClient _apiWith(Map<String, http.Response> routes) {
   );
 }
 
-http.Response _json(Object body) => http.Response(jsonEncode(body), 200,
-    headers: {'content-type': 'application/json'});
+http.Response _json(Object body) => http.Response(
+  jsonEncode(body),
+  200,
+  headers: {'content-type': 'application/json'},
+);
 
 void main() {
   group('NativePasskey híbrido', () {
@@ -168,94 +176,98 @@ void main() {
     });
 
     test(
-        'registerWithRecoveryAssertion resolve o externalUserId do backend e repassa o grant',
-        () async {
-      final platform = _FakePlatform(
-        available: true,
-        createResponse: {
-          'clientDataJsonBase64Url': 'CCCC',
-          'attestationObjectBase64Url': 'DDDD',
-          'transports': ['internal'],
-        },
-      );
-      // 'user_1' em base64url (userIdBase64Url do handler de recuperação).
-      final api = _apiWith({
-        '/passkey/recovery/biometric/registration-options': _json({
-          'recoveryGrantId': 'grant_1',
-          'expiresInSeconds': 300,
-          'challengeId': 'ch_1',
-          'challengeBase64Url': 'AAAA',
-          'rpId': 'swepay.com.br',
-          'rpName': 'Swepay',
-          'userIdBase64Url': 'dXNlcl8x', // base64url('user_1')
-          'userDisplayName': 'user_1',
-          'pubKeyCredParams': [-7],
-          'excludeCredentials': [],
-        }),
-        '/passkey/register/finish': _json({
-          'success': true,
-          'credentialId': 'cred_recovered',
-        }),
-      });
+      'registerWithRecoveryAssertion resolve o externalUserId do backend e repassa o grant',
+      () async {
+        final platform = _FakePlatform(
+          available: true,
+          createResponse: {
+            'clientDataJsonBase64Url': 'CCCC',
+            'attestationObjectBase64Url': 'DDDD',
+            'transports': ['internal'],
+          },
+        );
+        // 'user_1' em base64url (userIdBase64Url do handler de recuperação).
+        final api = _apiWith({
+          '/passkey/recovery/biometric/registration-options': _json({
+            'recoveryGrantId': 'grant_1',
+            'expiresInSeconds': 300,
+            'challengeId': 'ch_1',
+            'challengeBase64Url': 'AAAA',
+            'rpId': 'swepay.com.br',
+            'rpName': 'Swepay',
+            'userIdBase64Url': 'dXNlcl8x', // base64url('user_1')
+            'userDisplayName': 'user_1',
+            'pubKeyCredParams': [-7],
+            'excludeCredentials': [],
+          }),
+          '/passkey/register/finish': _json({
+            'success': true,
+            'credentialId': 'cred_recovered',
+          }),
+        });
 
-      final passkey = NativePasskey(
-        const NativePasskeyConfig(projectId: 'proj_x'),
-        apiClient: api,
-        platform: platform,
-      );
+        final passkey = NativePasskey(
+          const NativePasskeyConfig(projectId: 'proj_x'),
+          apiClient: api,
+          platform: platform,
+        );
 
-      final result = await passkey.registerWithRecoveryAssertion(
-        const RegisterWithRecoveryAssertionOptions(
-          assertion: 'jws.compact.assertion',
-          deviceName: 'iPhone recuperado',
-        ),
-      );
+        final result = await passkey.registerWithRecoveryAssertion(
+          const RegisterWithRecoveryAssertionOptions(
+            assertion: 'jws.compact.assertion',
+            deviceName: 'iPhone recuperado',
+          ),
+        );
 
-      expect(result.success, isTrue);
-      expect(result.credentialId, 'cred_recovered');
-      expect(platform.createCalls, 1);
-    });
-
-    test('registerWithRecoveryAssertion sem autenticador nativo → unsupported',
-        () async {
-      final platform = _FakePlatform(available: false);
-      final passkey = NativePasskey(
-        const NativePasskeyConfig(projectId: 'proj_x'),
-        apiClient: _apiWith({}),
-        platform: platform,
-      );
-
-      final result = await passkey.registerWithRecoveryAssertion(
-        const RegisterWithRecoveryAssertionOptions(
-          assertion: 'jws.compact.assertion',
-          deviceName: 'iPhone',
-        ),
-      );
-
-      expect(result.success, isFalse);
-      expect(result.error?.code, PasskeyErrorCode.unsupported);
-      expect(platform.createCalls, 0);
-    });
+        expect(result.success, isTrue);
+        expect(result.credentialId, 'cred_recovered');
+        expect(platform.createCalls, 1);
+      },
+    );
 
     test(
-        'registerWithRecoveryAssertion propaga PasskeyError tipado quando a asserção é rejeitada',
-        () async {
-      final api = _apiWith({}); // 404 default → sem "type"/"error" mapeável
-      final passkey = NativePasskey(
-        const NativePasskeyConfig(projectId: 'proj_x'),
-        apiClient: api,
-        platform: _FakePlatform(available: true),
-      );
+      'registerWithRecoveryAssertion sem autenticador nativo → unsupported',
+      () async {
+        final platform = _FakePlatform(available: false);
+        final passkey = NativePasskey(
+          const NativePasskeyConfig(projectId: 'proj_x'),
+          apiClient: _apiWith({}),
+          platform: platform,
+        );
 
-      final result = await passkey.registerWithRecoveryAssertion(
-        const RegisterWithRecoveryAssertionOptions(
-          assertion: 'jws.compact.assertion',
-          deviceName: 'iPhone',
-        ),
-      );
+        final result = await passkey.registerWithRecoveryAssertion(
+          const RegisterWithRecoveryAssertionOptions(
+            assertion: 'jws.compact.assertion',
+            deviceName: 'iPhone',
+          ),
+        );
 
-      expect(result.success, isFalse);
-      expect(result.error, isNotNull);
-    });
+        expect(result.success, isFalse);
+        expect(result.error?.code, PasskeyErrorCode.unsupported);
+        expect(platform.createCalls, 0);
+      },
+    );
+
+    test(
+      'registerWithRecoveryAssertion propaga PasskeyError tipado quando a asserção é rejeitada',
+      () async {
+        final api = _apiWith({}); // 404 default → sem "type"/"error" mapeável
+        final passkey = NativePasskey(
+          const NativePasskeyConfig(projectId: 'proj_x'),
+          apiClient: api,
+          platform: _FakePlatform(available: true),
+        );
+
+        final result = await passkey.registerWithRecoveryAssertion(
+          const RegisterWithRecoveryAssertionOptions(
+            assertion: 'jws.compact.assertion',
+            deviceName: 'iPhone',
+          ),
+        );
+
+        expect(result.success, isFalse);
+        expect(result.error, isNotNull);
+      },
+    );
   });
 }

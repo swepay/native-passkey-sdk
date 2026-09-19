@@ -24,6 +24,20 @@ export interface RegisterResult {
   error?: PasskeyError;
 }
 
+// ── Recuperação por asserção biométrica (SPEC-passkey-0002) ────────────────────
+
+export interface RegisterWithRecoveryAssertionOptions {
+  /**
+   * JWS compacto opaco emitido pelo Native Biometrics SDK (`@swepay/biometrics-react`,
+   * `useFaceVerification` com `purpose: 'recovery'`). O Passly SDK nunca decodifica nem
+   * persiste este valor — só o repassa ao backend (ADR-0003: nenhum produto depende do
+   * código de outro; aqui a integração é só "a string").
+   */
+  assertion: string;
+  /** Label do novo dispositivo (ex: "iPhone 16 Pro recuperado") */
+  deviceName: string;
+}
+
 // ── Autenticação ──────────────────────────────────────────────────────────────
 
 export interface AuthenticateOptions {
@@ -82,6 +96,16 @@ export type PasskeyErrorCode =
   | 'credential_already_registered'
   | 'project_not_found'
   | 'network_error'
+  // SPEC-passkey-0002 — RFC 9457 problem+json types under
+  // https://errors.swepay.com.br/passly/biometric-recovery/*, mapeados a partir do slug final
+  // do campo `type` (ver `mapProblemTypeToErrorCode` em client.ts).
+  | 'biometric_recovery_disabled'
+  | 'invalid_biometric_assertion'
+  | 'expired_biometric_assertion'
+  | 'replayed_biometric_assertion'
+  | 'biometric_purpose_mismatch'
+  | 'unknown_biometric_user'
+  | 'invalid_recovery_grant'
   | 'unknown_error';
 
 export class PasskeyError extends Error {
@@ -112,4 +136,30 @@ export interface BeginAuthResponse {
   challengeBase64Url: string;
   rpId: string;
   allowCredentials?: Array<{ credentialIdBase64Url: string; transports: string[] }>;
+}
+
+/** Resposta de `POST .../passkey/recovery/biometric/registration-options` (SPEC-passkey-0002). */
+export interface BeginBiometricRecoveryRegistrationResponse {
+  recoveryGrantId: string;
+  expiresInSeconds: number;
+  challengeId: string;
+  challengeBase64Url: string;
+  rpId: string;
+  rpName: string;
+  /** Bytes UTF-8 do `externalUserId` resolvido pelo backend a partir da asserção, em base64url. */
+  userIdBase64Url: string;
+  /** Igual ao `externalUserId` decodificado de `userIdBase64Url` — não há nome de exibição próprio neste fluxo. */
+  userDisplayName: string;
+  pubKeyCredParams: number[];
+  excludeCredentials: Array<{ credentialIdBase64Url: string; transports: string[] }>;
+}
+
+/** Corpo `application/problem+json` (RFC 9457) — GS-04, novos endpoints/erros do ecossistema. */
+export interface ProblemDetailsBody {
+  type: string;
+  title?: string;
+  status?: number;
+  detail?: string;
+  instance?: string;
+  traceId?: string;
 }

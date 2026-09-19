@@ -11,5 +11,6 @@ export { PasskeyManager } from './components/PasskeyManager';
 export { NativePasskeyClient, PasskeyError } from '@nativeguard/passkey';
 export type {
   NativePasskeyConfig, RegisterPasskeyOptions, AuthenticateOptions,
-  RegisterResult, AuthenticateResult, PasskeyCredential, PasskeySupport, PasskeyErrorCode
+  RegisterResult, RegisterWithRecoveryAssertionOptions,
+  AuthenticateResult, PasskeyCredential, PasskeySupport, PasskeyErrorCode
 } from '@nativeguard/passkey';

@@ -4,7 +4,8 @@ import { useCallback, useState } from 'react';
 import {
   PasskeyError,
   type AuthenticateOptions, type AuthenticateResult,
-  type RegisterPasskeyOptions, type RegisterResult
+  type RegisterPasskeyOptions, type RegisterResult,
+  type RegisterWithRecoveryAssertionOptions
 } from '@nativeguard/passkey';
 import { usePasskeyContext } from '../providers/PasskeyProvider';
 
@@ -43,5 +44,22 @@ export function usePasskey() {
     }
   }, [client]);
 
-  return { isLoading, error, authenticate, register, clearError: () => setError(null) };
+  const registerWithRecoveryAssertion = useCallback(async (
+    options: RegisterWithRecoveryAssertionOptions
+  ): Promise<RegisterResult> => {
+    setIsLoading(true); setError(null);
+    try {
+      const result = await client.registerWithRecoveryAssertion(options);
+      if (!result.success && result.error) setError(result.error);
+      return result;
+    } catch (err) {
+      const e = err instanceof PasskeyError ? err : new PasskeyError('unknown_error', String(err));
+      setError(e);
+      return { success: false, error: e };
+    } finally {
+      setIsLoading(false);
+    }
+  }, [client]);
+
+  return { isLoading, error, authenticate, register, registerWithRecoveryAssertion, clearError: () => setError(null) };
 }

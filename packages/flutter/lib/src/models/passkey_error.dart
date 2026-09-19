@@ -48,6 +48,33 @@ enum PasskeyErrorCode {
   /// Plataforma sem suporte a passkey e sem fallback WebView configurado.
   unsupported('unsupported'),
 
+  // ── SPEC-passkey-0002 — recuperação por asserção biométrica ────────────────
+  // O contrato desses erros é `application/problem+json` (RFC 9457, GS-04), não o
+  // `{error, details}` legado — o `wireValue` aqui é o último segmento do `type`
+  // (`https://errors.swepay.com.br/passly/biometric-recovery/<slug>`), mesma
+  // extração que `PasskeyApiClient._ensureOk` já fazia como fallback genérico.
+
+  /// Projeto não configurou (ou desabilitou) a integração com Native Biometrics.
+  biometricRecoveryDisabled('disabled'),
+
+  /// Assinatura/estrutura da asserção inválida, ou `tenant_id`/`decision` incorretos.
+  invalidBiometricAssertion('invalid-assertion'),
+
+  /// A asserção expirou ou está fora da janela de idade configurada.
+  expiredBiometricAssertion('expired-assertion'),
+
+  /// A asserção (`jti`/correlationId) já foi usada uma vez.
+  replayedBiometricAssertion('replayed-assertion'),
+
+  /// A asserção não tem `purpose=Recovery`.
+  biometricPurposeMismatch('purpose-mismatch'),
+
+  /// O `user_ref` da asserção não é um `externalUserId` utilizável.
+  unknownBiometricUser('unknown-user'),
+
+  /// O `PasskeyRecoveryGrant` está ausente, expirado, já usado ou não bate com o `finish`.
+  invalidRecoveryGrant('invalid-recovery-grant'),
+
   /// Erro desconhecido / não mapeado.
   unknownError('unknown_error');
 

@@ -39,6 +39,9 @@ class PasskeyApiClient {
   }
 
   /// Finaliza o registro, enviando a attestation produzida pelo autenticador.
+  ///
+  /// [recoveryGrantId] é informado apenas no fluxo de recuperação biométrica
+  /// (SPEC-passkey-0002) — omitido preserva 100% o comportamento existente.
   Future<Map<String, dynamic>> finishRegistration({
     required String externalUserId,
     required String challengeId,
@@ -46,6 +49,7 @@ class PasskeyApiClient {
     required String attestationObjectBase64Url,
     required String deviceName,
     required List<String> transports,
+    String? recoveryGrantId,
   }) {
     return _post('/passkey/register/finish', {
       'externalUserId': externalUserId,
@@ -54,7 +58,18 @@ class PasskeyApiClient {
       'attestationObjectBase64Url': attestationObjectBase64Url,
       'deviceName': deviceName,
       'transports': transports,
+      if (recoveryGrantId != null) 'recoveryGrantId': recoveryGrantId,
     });
+  }
+
+  /// Troca uma asserção de recuperação biométrica (`purpose=Recovery`) por opções de
+  /// registro WebAuthn autorizadas por um `PasskeyRecoveryGrant` de uso único (SPEC-passkey-0002).
+  Future<BeginBiometricRecoveryRegistrationResponse>
+      beginBiometricRecoveryRegistration({required String assertion}) async {
+    final json = await _post('/passkey/recovery/biometric/registration-options', {
+      'assertion': assertion,
+    });
+    return BeginBiometricRecoveryRegistrationResponse.fromJson(json);
   }
 
   /// Inicia a autenticação. `externalUserId` nulo = discoverable credential.

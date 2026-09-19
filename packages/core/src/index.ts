@@ -5,6 +5,7 @@ export type {
   NativePasskeyConfig,
   RegisterPasskeyOptions,
   RegisterResult,
+  RegisterWithRecoveryAssertionOptions,
   AuthenticateOptions,
   AuthenticateResult,
   PasskeyCredential,

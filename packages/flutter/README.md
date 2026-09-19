@@ -69,6 +69,31 @@ if (auth.success) {
 }
 ```
 
+### Recuperação de conta com asserção biométrica (SPEC-passkey-0002)
+
+Quando o usuário perde o único dispositivo com a passkey, `registerWithRecoveryAssertion`
+troca uma asserção `purpose=Recovery` do Native Biometrics (obtida fora deste SDK — este
+pacote nunca decodifica nem persiste a string) por uma passkey nova:
+
+```dart
+final assertion = await obterAsercaoDeRecuperacao(); // Native Biometrics — fora deste SDK
+
+final result = await passkey.registerWithRecoveryAssertion(
+  const RegisterWithRecoveryAssertionOptions(
+    assertion: assertion,
+    deviceName: 'iPhone 16 Pro recuperado',
+  ),
+);
+if (result.success) {
+  // result.credentialId — dispositivo novo pronto para autenticar
+}
+```
+
+**Limitação atual:** diferente de `register`/`authenticate`, este fluxo só tem o caminho
+**nativo** (Credential Manager / ASAuthorization) — não há fallback WebView de recuperação
+ainda; sem autenticador de plataforma disponível, o resultado é
+`PasskeyErrorCode.unsupported`.
+
 ### Detecção de suporte
 
 ```dart

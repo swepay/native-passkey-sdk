@@ -4,6 +4,11 @@
 > Repositório único, três pacotes publicáveis, toolchain `pnpm` + `turbo`.
 > Este documento é a especificação completa e autoritativa — implemente exatamente como descrito,
 > na ordem das seções. Não interprete, não improvise.
+>
+> **Nota:** este documento é o *bootstrap* histórico do repositório (snapshot do estado
+> inicial). Mudanças de API pós-bootstrap têm sua própria nota em `docs/SPEC-passkey-sdk-*.md`
+> (ex.: `SPEC-passkey-sdk-0001-recovery-assertion-registration.md`) em vez de reescrever os
+> trechos de código embutidos abaixo — consulte o `README.md` para a API de referência atual.
 
 ---
 

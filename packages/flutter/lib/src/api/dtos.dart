@@ -89,6 +89,76 @@ class BeginRegistrationResponse {
   }
 }
 
+/// Resposta de `/passkey/recovery/biometric/registration-options` (SPEC-passkey-0002).
+class BeginBiometricRecoveryRegistrationResponse {
+  /// Cria a resposta.
+  const BeginBiometricRecoveryRegistrationResponse({
+    required this.recoveryGrantId,
+    required this.expiresInSeconds,
+    required this.challengeId,
+    required this.challengeBase64Url,
+    required this.rpId,
+    required this.rpName,
+    required this.userIdBase64Url,
+    required this.userDisplayName,
+    required this.pubKeyCredParams,
+    required this.excludeCredentials,
+  });
+
+  /// Identificador do `PasskeyRecoveryGrant` de uso único — repassar em `finishRegistration`.
+  final String recoveryGrantId;
+
+  /// Validade do grant, em segundos (5 minutos no backend).
+  final int expiresInSeconds;
+
+  /// Identificador do challenge no backend.
+  final String challengeId;
+
+  /// Challenge em base64url.
+  final String challengeBase64Url;
+
+  /// Relying Party ID (domínio).
+  final String rpId;
+
+  /// Nome legível do Relying Party.
+  final String rpName;
+
+  /// Bytes UTF-8 do `externalUserId` resolvido pelo backend a partir da asserção, em base64url.
+  final String userIdBase64Url;
+
+  /// Igual ao `externalUserId` decodificado de [userIdBase64Url] — sem nome de exibição próprio neste fluxo.
+  final String userDisplayName;
+
+  /// Algoritmos COSE aceitos (ex.: -7 para ES256).
+  final List<int> pubKeyCredParams;
+
+  /// Credenciais a excluir (evita registro duplicado no mesmo device).
+  final List<CredentialDescriptorDto> excludeCredentials;
+
+  /// Constrói a partir de JSON.
+  factory BeginBiometricRecoveryRegistrationResponse.fromJson(
+      Map<String, dynamic> json) {
+    return BeginBiometricRecoveryRegistrationResponse(
+      recoveryGrantId: json['recoveryGrantId'] as String,
+      expiresInSeconds: (json['expiresInSeconds'] as num).toInt(),
+      challengeId: json['challengeId'] as String,
+      challengeBase64Url: json['challengeBase64Url'] as String,
+      rpId: json['rpId'] as String,
+      rpName: json['rpName'] as String,
+      userIdBase64Url: json['userIdBase64Url'] as String,
+      userDisplayName: json['userDisplayName'] as String,
+      pubKeyCredParams: (json['pubKeyCredParams'] as List<dynamic>)
+          .map((e) => (e as num).toInt())
+          .toList(growable: false),
+      excludeCredentials:
+          (json['excludeCredentials'] as List<dynamic>? ?? const [])
+              .map((e) =>
+                  CredentialDescriptorDto.fromJson(e as Map<String, dynamic>))
+              .toList(growable: false),
+    );
+  }
+}
+
 /// Resposta de `/passkey/authenticate/begin`.
 class BeginAuthResponse {
   /// Cria a resposta.

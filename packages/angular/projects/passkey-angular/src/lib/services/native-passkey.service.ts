@@ -6,6 +6,7 @@ import {
   type PasskeySupport,
   type RegisterPasskeyOptions,
   type RegisterResult,
+  type RegisterWithRecoveryAssertionOptions,
   type AuthenticateOptions,
   type AuthenticateResult,
   type PasskeyCredential
@@ -27,6 +28,21 @@ export class NativePasskeyService {
 
   async registerPasskey(options: RegisterPasskeyOptions): Promise<RegisterResult> {
     const result = await this.client.registerPasskey(options);
+    this.flutter.sendToFlutter(
+      result.success
+        ? { type: 'passkey_registered', payload: { credentialId: result.credentialId, deviceName: result.deviceName } }
+        : { type: 'passkey_error', payload: { error: result.error?.code } }
+    );
+    return result;
+  }
+
+  /**
+   * Registra uma passkey nova a partir de uma asserção de recuperação biométrica
+   * (SPEC-passkey-0002) — mesmo fluxo de `registerPasskey`, exposto para o caso em que o
+   * usuário perdeu o único dispositivo e não tem outra forma de provar quem é.
+   */
+  async registerWithRecoveryAssertion(options: RegisterWithRecoveryAssertionOptions): Promise<RegisterResult> {
+    const result = await this.client.registerWithRecoveryAssertion(options);
     this.flutter.sendToFlutter(
       result.success
         ? { type: 'passkey_registered', payload: { credentialId: result.credentialId, deviceName: result.deviceName } }

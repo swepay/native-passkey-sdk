@@ -36,6 +36,39 @@ describe('usePasskey', () => {
     expect(result.current.error).toBeNull();
   });
 
+  it('authenticate: propaga o erro de negócio retornado pelo client sem lançar exceção', async () => {
+    const error = new PasskeyError('invalid_biometric_assertion', 'assertion recusada');
+    vi.spyOn(NativePasskeyClient.prototype, 'authenticateWithPasskey').mockResolvedValueOnce({
+      success: false,
+      error
+    });
+
+    const { result } = renderHook(() => usePasskey(), { wrapper });
+
+    let outcome;
+    await act(async () => {
+      outcome = await result.current.authenticate();
+    });
+
+    expect(outcome).toEqual({ success: false, error });
+    expect(result.current.error).toBe(error);
+  });
+
+  it('authenticate: repropaga PasskeyError lançado pelo client sem reembrulhar', async () => {
+    const thrown = new PasskeyError('invalid_biometric_assertion', 'biometria inválida');
+    vi.spyOn(NativePasskeyClient.prototype, 'authenticateWithPasskey').mockRejectedValueOnce(thrown);
+
+    const { result } = renderHook(() => usePasskey(), { wrapper });
+
+    let outcome;
+    await act(async () => {
+      outcome = await result.current.authenticate();
+    });
+
+    expect(outcome).toEqual({ success: false, error: thrown });
+    expect(result.current.error).toBe(thrown);
+  });
+
   it('authenticate: captura exceção inesperada e expõe via error/clearError', async () => {
     vi.spyOn(NativePasskeyClient.prototype, 'authenticateWithPasskey').mockRejectedValueOnce(
       new Error('network down')
@@ -76,6 +109,28 @@ describe('usePasskey', () => {
     expect(result.current.error).toBeNull();
   });
 
+  it('register: propaga o erro de negócio retornado pelo client sem lançar exceção', async () => {
+    const error = new PasskeyError('invalid_biometric_assertion', 'dispositivo recusado');
+    vi.spyOn(NativePasskeyClient.prototype, 'registerPasskey').mockResolvedValueOnce({
+      success: false,
+      error
+    });
+
+    const { result } = renderHook(() => usePasskey(), { wrapper });
+
+    let outcome;
+    await act(async () => {
+      outcome = await result.current.register({
+        externalUserId: faker.string.uuid(),
+        userDisplayName: faker.person.fullName(),
+        deviceName: faker.commerce.productName()
+      });
+    });
+
+    expect(outcome).toEqual({ success: false, error });
+    expect(result.current.error).toBe(error);
+  });
+
   it('registerWithRecoveryAssertion: propaga o erro de negócio retornado pelo client', async () => {
     const error = new PasskeyError('invalid_biometric_assertion', 'assertion expirada');
     vi.spyOn(NativePasskeyClient.prototype, 'registerWithRecoveryAssertion').mockResolvedValueOnce({
@@ -95,5 +150,85 @@ describe('usePasskey', () => {
 
     expect(outcome).toEqual({ success: false, error });
     expect(result.current.error).toBe(error);
+  });
+
+  it('register: captura exceção inesperada e devolve unknown_error', async () => {
+    vi.spyOn(NativePasskeyClient.prototype, 'registerPasskey').mockRejectedValueOnce(
+      new Error('device rejected')
+    );
+
+    const { result } = renderHook(() => usePasskey(), { wrapper });
+
+    let outcome;
+    await act(async () => {
+      outcome = await result.current.register({
+        externalUserId: faker.string.uuid(),
+        userDisplayName: faker.person.fullName(),
+        deviceName: faker.commerce.productName()
+      });
+    });
+
+    expect(outcome).toEqual({ success: false, error: result.current.error });
+    expect(result.current.error).toBeInstanceOf(PasskeyError);
+    expect(result.current.error?.code).toBe('unknown_error');
+    expect(result.current.isLoading).toBe(false);
+  });
+
+  it('register: repropaga PasskeyError lançado pelo client sem reembrulhar', async () => {
+    const thrown = new PasskeyError('invalid_biometric_assertion', 'biometria inválida');
+    vi.spyOn(NativePasskeyClient.prototype, 'registerPasskey').mockRejectedValueOnce(thrown);
+
+    const { result } = renderHook(() => usePasskey(), { wrapper });
+
+    let outcome;
+    await act(async () => {
+      outcome = await result.current.register({
+        externalUserId: faker.string.uuid(),
+        userDisplayName: faker.person.fullName(),
+        deviceName: faker.commerce.productName()
+      });
+    });
+
+    expect(outcome).toEqual({ success: false, error: thrown });
+    expect(result.current.error).toBe(thrown);
+  });
+
+  it('registerWithRecoveryAssertion: repropaga PasskeyError lançado pelo client sem reembrulhar', async () => {
+    const thrown = new PasskeyError('invalid_biometric_assertion', 'assertion de recuperação inválida');
+    vi.spyOn(NativePasskeyClient.prototype, 'registerWithRecoveryAssertion').mockRejectedValueOnce(thrown);
+
+    const { result } = renderHook(() => usePasskey(), { wrapper });
+
+    let outcome;
+    await act(async () => {
+      outcome = await result.current.registerWithRecoveryAssertion({
+        assertion: faker.string.alphanumeric(40),
+        deviceName: faker.commerce.productName()
+      });
+    });
+
+    expect(outcome).toEqual({ success: false, error: thrown });
+    expect(result.current.error).toBe(thrown);
+  });
+
+  it('registerWithRecoveryAssertion: captura exceção inesperada e devolve unknown_error', async () => {
+    vi.spyOn(NativePasskeyClient.prototype, 'registerWithRecoveryAssertion').mockRejectedValueOnce(
+      new Error('assertion service indisponível')
+    );
+
+    const { result } = renderHook(() => usePasskey(), { wrapper });
+
+    let outcome;
+    await act(async () => {
+      outcome = await result.current.registerWithRecoveryAssertion({
+        assertion: faker.string.alphanumeric(40),
+        deviceName: faker.commerce.productName()
+      });
+    });
+
+    expect(outcome).toEqual({ success: false, error: result.current.error });
+    expect(result.current.error).toBeInstanceOf(PasskeyError);
+    expect(result.current.error?.code).toBe('unknown_error');
+    expect(result.current.isLoading).toBe(false);
   });
 });

@@ -23,7 +23,21 @@ jobs:
       # A política da enterprise desliga "Allow GitHub Actions to create and approve
       # pull requests", então o GITHUB_TOKEN não consegue abrir o PR "Version Packages".
       # CHANGESETS_GITHUB_TOKEN = fine-grained PAT (Contents: write, Pull requests: write)
-      # deste repo; sem o secret o workflow cai no GITHUB_TOKEN e falha como antes.
+      # deste repo. Enquanto o secret não existir, o passo de release é pulado
+      # (em vez de falhar) — ver step "Check for release token" abaixo.
+      - name: Check for release token
+        id: release-token
+        env:
+          # Não referenciar secrets diretamente em `if:` — usa-se env + output.
+          RELEASE_TOKEN: ${{ secrets.CHANGESETS_GITHUB_TOKEN }}
+        run: |
+          if [ -n "$RELEASE_TOKEN" ]; then
+            echo "has-token=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-token=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Release pulado::CHANGESETS_GITHUB_TOKEN não configurado neste repositório. A política da enterprise bloqueia o GITHUB_TOKEN padrão de criar/aprovar pull requests, então o Changesets Action não consegue abrir o PR 'Version Packages' (falharia com 'GitHub Actions is not permitted to create or approve pull requests'). Para habilitar o release automático: crie um fine-grained PAT com permissões 'Contents: write' e 'Pull requests: write' neste repositório e salve-o em Settings > Secrets and variables > Actions como CHANGESETS_GITHUB_TOKEN. Este job publicará normalmente assim que o secret existir."
+          fi
+
       - name: Checkout
         uses: actions/checkout@v6
         with:
@@ -70,6 +84,8 @@ jobs:
       #       → Cria tags git para cada pacote publicado (ex: @nativeguard/passkey@1.2.0)
       # ────────────────────────────────────────────────────────────────────────
       - name: Create Release PR or Publish to npm
+        id: changesets
+        if: steps.release-token.outputs.has-token == 'true'
         uses: changesets/action@v1
         with:
           # Comando de publicação — roda apenas quando o PR de versão é mergeado

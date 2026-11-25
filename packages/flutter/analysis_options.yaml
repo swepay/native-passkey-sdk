@@ -1,6 +1,12 @@
 include: package:flutter_lints/flutter.yaml
 
 analyzer:
+  # Mesmos excludes que o `flutter pub get` (>= 3.47) escreveria sozinho; declarados
+  # aqui para a árvore ficar limpa no `pub publish --dry-run` do CI.
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
   language:
     strict-casts: true
     strict-raw-types: true

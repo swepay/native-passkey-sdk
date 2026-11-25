@@ -1,5 +1,5 @@
 {
-  "name": "@nativeguard/passkey-react",
+  "name": "@swepay/native-passly-react",
   "version": "1.1.0",
   "description": "NativePasskey React components, hooks and Next.js App Router integration",
   "type": "module",
@@ -45,7 +45,7 @@
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
-    "@nativeguard/passkey": "workspace:*",
+    "@swepay/native-passly-sdk": "workspace:*",
     "jose": "^5.10.0"
   },
   "devDependencies": {

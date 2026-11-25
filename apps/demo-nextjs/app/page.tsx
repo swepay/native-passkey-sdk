@@ -8,7 +8,7 @@ import {
   usePasskeySupport,
   type AuthenticateResult,
   type RegisterResult
-} from '@nativeguard/passkey-react';
+} from '@swepay/native-passly-react';
 
 const DEMO_USER_ID = 'demo-user-001';
 const DEMO_API_KEY = process.env.NEXT_PUBLIC_NPK_DEMO_API_KEY ?? '';

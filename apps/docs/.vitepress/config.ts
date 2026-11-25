@@ -44,16 +44,16 @@ export default defineConfig({
             text: 'Pacotes npm',
             items: [
               {
-                text: '@nativeguard/passkey',
-                link: 'https://www.npmjs.com/package/@nativeguard/passkey',
+                text: '@swepay/native-passly-sdk',
+                link: 'https://www.npmjs.com/package/@swepay/native-passly-sdk',
               },
               {
-                text: '@nativeguard/passkey-angular',
-                link: 'https://www.npmjs.com/package/@nativeguard/passkey-angular',
+                text: '@swepay/native-passly-angular',
+                link: 'https://www.npmjs.com/package/@swepay/native-passly-angular',
               },
               {
-                text: '@nativeguard/passkey-react',
-                link: 'https://www.npmjs.com/package/@nativeguard/passkey-react',
+                text: '@swepay/native-passly-react',
+                link: 'https://www.npmjs.com/package/@swepay/native-passly-react',
               },
               {
                 text: 'native_passkey_flutter',
@@ -69,9 +69,9 @@ export default defineConfig({
       {
         text: 'Pacotes',
         items: [
-          { text: 'Core — @nativeguard/passkey', link: '/core/' },
-          { text: 'React — @nativeguard/passkey-react', link: '/react/' },
-          { text: 'Angular — @nativeguard/passkey-angular', link: '/angular/' },
+          { text: 'Core — @swepay/native-passly-sdk', link: '/core/' },
+          { text: 'React — @swepay/native-passly-react', link: '/react/' },
+          { text: 'Angular — @swepay/native-passly-angular', link: '/angular/' },
           { text: 'Flutter — native_passkey_flutter', link: '/flutter/' },
         ],
       },
@@ -79,7 +79,7 @@ export default defineConfig({
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/swepay/native-passkey-sdk' },
-      { icon: 'npm', link: 'https://www.npmjs.com/package/@nativeguard/passkey' },
+      { icon: 'npm', link: 'https://www.npmjs.com/package/@swepay/native-passly-sdk' },
     ],
 
     footer: {

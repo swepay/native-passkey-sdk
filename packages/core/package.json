@@ -1,5 +1,5 @@
 {
-  "name": "@nativeguard/passkey",
+  "name": "@swepay/native-passly-sdk",
   "version": "1.1.0",
   "description": "NativePasskey core client — WebAuthn/FIDO2 framework-agnostic",
   "type": "module",

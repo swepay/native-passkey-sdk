@@ -3,7 +3,7 @@
 ## Visão Geral
 
 Monorepo do **NativePasskey SDK** — biblioteca de autenticação WebAuthn/FIDO2 (Passkey)
-do ecossistema **Swepay / NativeGuard**, publicada sob o escopo `@nativeguard`.
+do ecossistema **Swepay / NativeGuard**, publicada sob o escopo `@swepay`.
 
 O SDK expõe três pacotes publicáveis que compartilham a mesma lógica WebAuthn via
 camada de core, sem duplicação de código entre frameworks.
@@ -13,9 +13,9 @@ camada de core, sem duplicação de código entre frameworks.
 ```
 native-passkey-sdk/
 ├── packages/
-│   ├── core/      → @nativeguard/passkey          (zero deps, TypeScript puro)
-│   ├── angular/   → @nativeguard/passkey-angular   (Angular 21, ng-packagr)
-│   └── react/     → @nativeguard/passkey-react     (React 19 + Next.js 15, tsup)
+│   ├── core/      → @swepay/native-passly-sdk          (zero deps, TypeScript puro)
+│   ├── angular/   → @swepay/native-passly-angular   (Angular 21, ng-packagr)
+│   └── react/     → @swepay/native-passly-react     (React 19 + Next.js 15, tsup)
 ├── apps/
 │   └── demo-nextjs/                                (Next.js 15, não publicado)
 └── docs/
@@ -54,7 +54,7 @@ Turborepo gerencia a ordem via `dependsOn: ["^build"]` no `turbo.json`.
 
 ## Pacotes Publicados
 
-### `@nativeguard/passkey` (core)
+### `@swepay/native-passly-sdk` (core)
 
 - **Zero dependências** em runtime
 - `NativePasskeyClient` — cliente principal WebAuthn/FIDO2
@@ -63,7 +63,7 @@ Turborepo gerencia a ordem via `dependsOn: ["^build"]` no `turbo.json`.
 - Tipos: `RegisterResult`, `AuthenticateResult`, `PasskeyCredential`, `PasskeyError`
 - Entry points: `dist/index.js` (ESM) + `dist/index.cjs` (CJS)
 
-### `@nativeguard/passkey-angular` (Angular 21)
+### `@swepay/native-passly-angular` (Angular 21)
 
 - Reexporta todos os tipos do core — consumidores instalam apenas este pacote
 - `NativePasskeyService` — wraps `NativePasskeyClient` com RxJS e Signals
@@ -73,7 +73,7 @@ Turborepo gerencia a ordem via `dependsOn: ["^build"]` no `turbo.json`.
 - `NativePasskeyModule.forRoot(config)` — módulo de configuração
 - Build via `ng-packagr` em `packages/angular/`
 
-### `@nativeguard/passkey-react` (React 19 / Next.js 15)
+### `@swepay/native-passly-react` (React 19 / Next.js 15)
 
 - Reexporta todos os tipos do core — consumidores instalam apenas este pacote
 - `PasskeyProvider` — Context Provider com estado global
@@ -109,7 +109,7 @@ Seguir **Conventional Commits**:
 feat(core): add credential listing endpoint
 fix(angular): correct base64url padding
 docs(react): update PasskeyVerifier usage example
-chore(deps): bump @nativeguard/passkey to 1.2.0
+chore(deps): bump @swepay/native-passly-sdk to 1.2.0
 ```
 
 ### Versionamento
@@ -137,13 +137,13 @@ pnpm build
 pnpm test
 
 # Build de um pacote específico
-pnpm --filter @nativeguard/passkey build
-pnpm --filter @nativeguard/passkey-angular build
-pnpm --filter @nativeguard/passkey-react build
+pnpm --filter @swepay/native-passly-sdk build
+pnpm --filter @swepay/native-passly-angular build
+pnpm --filter @swepay/native-passly-react build
 
 # Dev mode (watch)
-pnpm --filter @nativeguard/passkey dev
-pnpm --filter @nativeguard/passkey-react dev
+pnpm --filter @swepay/native-passly-sdk dev
+pnpm --filter @swepay/native-passly-react dev
 
 # Rodar demo Next.js
 pnpm --filter demo-nextjs dev
@@ -183,7 +183,7 @@ Nunca comitar `.env` — usar `.env.local` localmente.
 
 | Secret | Onde configurar | Para que serve |
 |--------|----------------|----------------|
-| `NPM_TOKEN` | Settings → Secrets → Actions | Publicar no npm com permissão de escrita no escopo `@nativeguard` |
+| `NPM_TOKEN` | Settings → Secrets → Actions | Publicar no npm com permissão de escrita no escopo `@swepay` |
 | `GITHUB_TOKEN` | Gerado automaticamente | Criar PRs e releases — já disponível |
 
 ### Fluxo de publicação (release.yml + Changesets)
@@ -194,7 +194,7 @@ Nunca comitar `.env` — usar `.env.local` localmente.
 4. PR "Version Packages" é mergeado → `release.yml` roda novamente
 5. Changesets Action executa `pnpm changeset publish --provenance`
 6. Os 3 pacotes são publicados no npm com a mesma versão (config `fixed`)
-7. Tags git criadas: `@nativeguard/passkey@x.y.z`, etc.
+7. Tags git criadas: `@swepay/native-passly-sdk@x.y.z`, etc.
 8. GitHub Releases criadas automaticamente
 
 ### Documentação — GitHub Pages

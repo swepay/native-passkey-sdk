@@ -1,17 +1,17 @@
-# @nativeguard/passkey (core)
+# @swepay/native-passly-sdk (core)
 
 Cliente WebAuthn/FIDO2 framework-agnostic. É a base sobre a qual os pacotes
-`@nativeguard/passkey-react` e `@nativeguard/passkey-angular` são construídos —
+`@swepay/native-passly-react` e `@swepay/native-passly-angular` são construídos —
 instale-o diretamente apenas se estiver integrando um framework ainda sem
 wrapper dedicado.
 
-- npm: [`@nativeguard/passkey`](https://www.npmjs.com/package/@nativeguard/passkey)
+- npm: [`@swepay/native-passly-sdk`](https://www.npmjs.com/package/@swepay/native-passly-sdk)
 - Código-fonte: [`packages/core`](https://github.com/swepay/native-passkey-sdk/tree/main/packages/core)
 
 ## Instalação
 
 ```bash
-pnpm add @nativeguard/passkey
+pnpm add @swepay/native-passly-sdk
 ```
 
 ## API pública
@@ -28,7 +28,7 @@ Exportado por `src/index.ts`:
 ## Exemplo mínimo
 
 ```ts
-import { NativePasskeyClient } from '@nativeguard/passkey';
+import { NativePasskeyClient } from '@swepay/native-passly-sdk';
 
 const client = new NativePasskeyClient({ projectId: 'proj_xxx' });
 
@@ -38,6 +38,6 @@ if (!result.success) {
 }
 ```
 
-Para uso com React ou Angular, prefira os wrappers `@nativeguard/passkey-react`
-e `@nativeguard/passkey-angular`, que já expõem este cliente através de
+Para uso com React ou Angular, prefira os wrappers `@swepay/native-passly-react`
+e `@swepay/native-passly-angular`, que já expõem este cliente através de
 hooks/serviços idiomáticos.

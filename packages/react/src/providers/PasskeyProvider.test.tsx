@@ -1,6 +1,6 @@
 // packages/react/src/providers/PasskeyProvider.test.tsx
 import { renderHook, waitFor } from '@testing-library/react';
-import { NativePasskeyClient } from '@nativeguard/passkey';
+import { NativePasskeyClient } from '@swepay/native-passly-sdk';
 import { describe, expect, it, vi, afterEach } from 'vitest';
 import { PasskeyProvider, usePasskeyContext } from './PasskeyProvider';
 

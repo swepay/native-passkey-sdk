@@ -195,7 +195,7 @@ Cada tutorial deve ter esta estrutura:
 
 Este é o tutorial mais crítico. Deve cobrir:
 
-1. **Instalação** do `@nativeguard/passkey-angular`
+1. **Instalação** do `@swepay/native-passly-angular`
 2. **`NativePasskeyModule.forRoot()`** — configuração mínima
 3. **`NativePasskeyService`** — registro e autenticação com signals
 4. **`PasskeyButtonComponent`** — uso direto no template
@@ -207,7 +207,7 @@ Este é o tutorial mais crítico. Deve cobrir:
 
 Deve cobrir:
 
-1. **Instalação** do `@nativeguard/passkey-react`
+1. **Instalação** do `@swepay/native-passly-react`
 2. **`PasskeyProvider`** em `layout.tsx`
 3. **`usePasskey`** em Client Component para registro
 4. **`usePasskey`** em Client Component para autenticação

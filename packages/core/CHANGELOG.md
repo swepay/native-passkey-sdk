@@ -1,4 +1,4 @@
-# @nativeguard/passkey
+# @swepay/native-passly-sdk
 
 ## 1.1.0
 

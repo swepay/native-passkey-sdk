@@ -10,7 +10,7 @@ import {
   type AuthenticateOptions,
   type AuthenticateResult,
   type PasskeyCredential
-} from '@nativeguard/passkey';
+} from '@swepay/native-passly-sdk';
 import { FlutterBridgeService } from './flutter-bridge.service';
 
 @Injectable({ providedIn: 'root' })

@@ -14,13 +14,13 @@ hero:
       link: https://github.com/swepay/native-passkey-sdk
 
 features:
-  - title: '@nativeguard/passkey (core)'
+  - title: '@swepay/native-passly-sdk (core)'
     details: Cliente WebAuthn/FIDO2 framework-agnostic — registro, autenticação e recuperação por assertion.
     link: /core/
-  - title: '@nativeguard/passkey-react'
+  - title: '@swepay/native-passly-react'
     details: Provider, hooks (usePasskey, usePasskeySupport, usePasskeyCredentials) e componentes React/Next.js.
     link: /react/
-  - title: '@nativeguard/passkey-angular'
+  - title: '@swepay/native-passly-angular'
     details: Módulo Angular, serviço, componentes, guard de rota e ponte com WebView Flutter.
     link: /angular/
   - title: native_passkey_flutter

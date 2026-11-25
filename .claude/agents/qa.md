@@ -29,8 +29,8 @@ Você é especialista em:
   `PublicKeyCredential`, `AuthenticatorAttestationResponse`, `AuthenticatorAssertionResponse`
 - **Protocolo WebAuthn/FIDO2** — casos extremos: challenge replay, signCount decrescente,
   origin mismatch, rpIdHash inválido, COSE key malformado, padding base64url incorreto
-- **Contract testing** — validação de que `@nativeguard/passkey-angular` e
-  `@nativeguard/passkey-react` honram os tipos exportados pelo core
+- **Contract testing** — validação de que `@swepay/native-passly-angular` e
+  `@swepay/native-passly-react` honram os tipos exportados pelo core
 - **Testing em ambientes SSR** — mocks de `window`, `navigator`, `document` ausentes
   no Node.js, verificação de que `PasskeyVerifier` não usa APIs de browser
 - **Coverage analysis** — leitura de relatórios Vitest/V8, identificação de branches
@@ -149,14 +149,14 @@ describe('FlutterBridgeService', () => {
 pnpm test
 
 # Com cobertura
-pnpm --filter @nativeguard/passkey test --coverage
-pnpm --filter @nativeguard/passkey-react test --coverage
+pnpm --filter @swepay/native-passly-sdk test --coverage
+pnpm --filter @swepay/native-passly-react test --coverage
 
 # Watch mode (dev)
-pnpm --filter @nativeguard/passkey test --watch
+pnpm --filter @swepay/native-passly-sdk test --watch
 
 # Um arquivo específico
-pnpm --filter @nativeguard/passkey test -- src/utils/base64url.test.ts
+pnpm --filter @swepay/native-passly-sdk test -- src/utils/base64url.test.ts
 
 # Testes Angular (ng test usa Karma/Jest via Angular CLI)
 pnpm --filter passkey-angular test
@@ -222,7 +222,7 @@ Todo PR que toque no core deve ter testes para:
 - [ ] Todos os tipos públicos exportados em `index.ts` / `public-api.ts`
 - [ ] Nenhum `any` explícito ou implícito em exports públicos
 - [ ] `PasskeyError` usado como tipo de erro em vez de `Error` genérico
-- [ ] Compatibilidade com Angular `@nativeguard/passkey-angular` ≥ 21.0.0
+- [ ] Compatibilidade com Angular `@swepay/native-passly-angular` ≥ 21.0.0
 
 ### Regressão
 

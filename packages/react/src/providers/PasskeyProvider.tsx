@@ -1,7 +1,7 @@
 // packages/react/src/providers/PasskeyProvider.tsx
 'use client';
 import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { NativePasskeyClient, type NativePasskeyConfig, type PasskeySupport } from '@nativeguard/passkey';
+import { NativePasskeyClient, type NativePasskeyConfig, type PasskeySupport } from '@swepay/native-passly-sdk';
 
 interface PasskeyContextValue {
   client: NativePasskeyClient;

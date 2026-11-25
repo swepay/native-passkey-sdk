@@ -1,7 +1,7 @@
 // packages/angular/projects/passkey-angular/src/lib/components/passkey-manager/passkey-manager.component.ts
 import { ChangeDetectionStrategy, Component, Input, OnInit, inject, signal } from '@angular/core';
 import { NgFor, NgIf, DatePipe } from '@angular/common';
-import type { PasskeyCredential } from '@nativeguard/passkey';
+import type { PasskeyCredential } from '@swepay/native-passly-sdk';
 import { NativePasskeyService } from '../../services/native-passkey.service';
 
 @Component({

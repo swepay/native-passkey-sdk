@@ -26,9 +26,9 @@
 ### Hierarquia de dependência (build order)
 
 ```
-packages/core          → @nativeguard/passkey
-   ├── packages/angular → @nativeguard/passkey-angular  (depende de core)
-   └── packages/react   → @nativeguard/passkey-react    (depende de core)
+packages/core          → @swepay/native-passly-sdk
+   ├── packages/angular → @swepay/native-passly-angular  (depende de core)
+   └── packages/react   → @swepay/native-passly-react    (depende de core)
           └── apps/demo-nextjs                           (depende de react)
 ```
 
@@ -41,7 +41,7 @@ packages/core          → @nativeguard/passkey
 ```
 native-passkey-sdk/
 ├── packages/
-│   ├── core/                               ← @nativeguard/passkey
+│   ├── core/                               ← @swepay/native-passly-sdk
 │   │   ├── src/
 │   │   │   ├── client.ts
 │   │   │   ├── types.ts
@@ -55,7 +55,7 @@ native-passkey-sdk/
 │   │   ├── tsconfig.json
 │   │   └── tsup.config.ts
 │   │
-│   ├── angular/                            ← @nativeguard/passkey-angular
+│   ├── angular/                            ← @swepay/native-passly-angular
 │   │   ├── projects/
 │   │   │   └── passkey-angular/            ← biblioteca publicável (ng-packagr)
 │   │   │       ├── src/
@@ -72,7 +72,7 @@ native-passkey-sdk/
 │   │   │       │   │   │   └── passkey-supported.guard.ts
 │   │   │       │   │   └── native-passkey.module.ts
 │   │   │       │   └── public-api.ts
-│   │   │       ├── package.json            ← name: "@nativeguard/passkey-angular"
+│   │   │       ├── package.json            ← name: "@swepay/native-passly-angular"
 │   │   │       └── ng-package.json
 │   │   ├── src/                            ← Angular demo app (não publicada)
 │   │   │   └── app/
@@ -80,7 +80,7 @@ native-passkey-sdk/
 │   │   ├── package.json                    ← workspace root do Angular CLI
 │   │   └── tsconfig.json
 │   │
-│   └── react/                              ← @nativeguard/passkey-react
+│   └── react/                              ← @swepay/native-passly-react
 │       ├── src/
 │       │   ├── components/
 │       │   │   ├── PasskeyButton.tsx
@@ -205,7 +205,7 @@ auto-install-peers=true
   "changelog": "@changesets/cli/changelog",
   "commit": false,
   "fixed": [
-    ["@nativeguard/passkey", "@nativeguard/passkey-angular", "@nativeguard/passkey-react"]
+    ["@swepay/native-passly-sdk", "@swepay/native-passly-angular", "@swepay/native-passly-react"]
   ],
   "linked": [],
   "access": "public",
@@ -219,13 +219,13 @@ auto-install-peers=true
 
 ---
 
-## 3. `packages/core` — `@nativeguard/passkey`
+## 3. `packages/core` — `@swepay/native-passly-sdk`
 
 ### `package.json`
 
 ```json
 {
-  "name": "@nativeguard/passkey",
+  "name": "@swepay/native-passly-sdk",
   "version": "1.0.0",
   "description": "NativePasskey core client — WebAuthn/FIDO2 framework-agnostic",
   "type": "module",
@@ -661,7 +661,7 @@ export type {
 
 ---
 
-## 4. `packages/angular` — `@nativeguard/passkey-angular`
+## 4. `packages/angular` — `@swepay/native-passly-angular`
 
 > O Angular CLI exige que a biblioteca viva dentro de um workspace Angular (`angular.json`).
 > O diretório `packages/angular/` É o workspace Angular. A biblioteca publicável fica em
@@ -687,7 +687,7 @@ export type {
     "@angular/platform-browser": "^21.0.0",
     "@angular/router": "^21.0.0",
     "@angular/service-worker": "^21.0.0",
-    "@nativeguard/passkey": "workspace:*",
+    "@swepay/native-passly-sdk": "workspace:*",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
@@ -703,20 +703,20 @@ export type {
 }
 ```
 
-> `"@nativeguard/passkey": "workspace:*"` — pnpm resolve para o pacote local em
+> `"@swepay/native-passly-sdk": "workspace:*"` — pnpm resolve para o pacote local em
 > `packages/core`. Sem `npm link`, sem `file:`. Turbo garante que core buildi antes.
 
 ### `packages/angular/projects/passkey-angular/package.json` (publicado no npm)
 
 ```json
 {
-  "name": "@nativeguard/passkey-angular",
+  "name": "@swepay/native-passly-angular",
   "version": "1.0.0",
   "peerDependencies": {
     "@angular/common": "^21.0.0",
     "@angular/core": "^21.0.0",
     "@angular/router": "^21.0.0",
-    "@nativeguard/passkey": "^1.0.0",
+    "@swepay/native-passly-sdk": "^1.0.0",
     "rxjs": "~7.8.0"
   },
   "dependencies": {
@@ -885,7 +885,7 @@ import {
   type AuthenticateOptions,
   type AuthenticateResult,
   type PasskeyCredential
-} from '@nativeguard/passkey';
+} from '@swepay/native-passly-sdk';
 import { FlutterBridgeService } from './flutter-bridge.service';
 
 @Injectable({ providedIn: 'root' })
@@ -939,7 +939,7 @@ import {
   ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, inject, signal
 } from '@angular/core';
 import { NgIf } from '@angular/common';
-import type { AuthenticateOptions, AuthenticateResult, PasskeySupport, RegisterPasskeyOptions, RegisterResult } from '@nativeguard/passkey';
+import type { AuthenticateOptions, AuthenticateResult, PasskeySupport, RegisterPasskeyOptions, RegisterResult } from '@swepay/native-passly-sdk';
 import { NativePasskeyService } from '../../services/native-passkey.service';
 
 export type PasskeyButtonMode = 'authenticate' | 'register';
@@ -1022,7 +1022,7 @@ export class PasskeyButtonComponent implements OnInit {
 // packages/angular/projects/passkey-angular/src/lib/components/passkey-manager/passkey-manager.component.ts
 import { ChangeDetectionStrategy, Component, Input, OnInit, inject, signal } from '@angular/core';
 import { NgFor, NgIf, DatePipe } from '@angular/common';
-import type { PasskeyCredential } from '@nativeguard/passkey';
+import type { PasskeyCredential } from '@swepay/native-passly-sdk';
 import { NativePasskeyService } from '../../services/native-passkey.service';
 
 @Component({
@@ -1090,7 +1090,7 @@ export class PasskeyManagerComponent implements OnInit {
 ```typescript
 // packages/angular/projects/passkey-angular/src/lib/native-passkey.module.ts
 import { ModuleWithProviders, NgModule } from '@angular/core';
-import type { NativePasskeyConfig } from '@nativeguard/passkey';
+import type { NativePasskeyConfig } from '@swepay/native-passly-sdk';
 import { NativePasskeyService } from './services/native-passkey.service';
 import { FlutterBridgeService } from './services/flutter-bridge.service';
 
@@ -1125,19 +1125,19 @@ export { PasskeyManagerComponent } from './lib/components/passkey-manager/passke
 export type { FlutterBridgeMessage, FlutterChannelMessage } from './lib/services/flutter-bridge.service';
 export type { PasskeyButtonMode } from './lib/components/passkey-button/passkey-button.component';
 
-// Re-export do core — consumer instala apenas @nativeguard/passkey-angular
-export { NativePasskeyClient, PasskeyError } from '@nativeguard/passkey';
+// Re-export do core — consumer instala apenas @swepay/native-passly-angular
+export { NativePasskeyClient, PasskeyError } from '@swepay/native-passly-sdk';
 export type {
   NativePasskeyConfig, RegisterPasskeyOptions, AuthenticateOptions,
   RegisterResult, AuthenticateResult, PasskeyCredential, PasskeySupport, PasskeyErrorCode
-} from '@nativeguard/passkey';
+} from '@swepay/native-passly-sdk';
 ```
 
 ### Flutter — `packages/flutter` → `native_passkey_flutter` (pub.dev)
 
 SDK Flutter **híbrido** publicado no pub.dev (não faz parte do workspace npm/pnpm).
 Em vez de um simples wrapper WebView, é um plugin federado com API Dart de primeira
-classe que espelha o contrato de `@nativeguard/passkey`:
+classe que espelha o contrato de `@swepay/native-passly-sdk`:
 
 - **Caminho nativo** — cerimônia WebAuthn local via **Android Credential Manager**
   (Kotlin, API 28+) e **iOS ASAuthorization** (Swift, iOS 16+). A camada nativa só
@@ -1193,13 +1193,13 @@ final auth = await passkey.authenticate(context: context);
 
 ---
 
-## 5. `packages/react` — `@nativeguard/passkey-react`
+## 5. `packages/react` — `@swepay/native-passly-react`
 
 ### `package.json`
 
 ```json
 {
-  "name": "@nativeguard/passkey-react",
+  "name": "@swepay/native-passly-react",
   "version": "1.0.0",
   "description": "NativePasskey React components, hooks and Next.js App Router integration",
   "type": "module",
@@ -1228,7 +1228,7 @@ final auth = await passkey.authenticate(context: context);
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
-    "@nativeguard/passkey": "workspace:*",
+    "@swepay/native-passly-sdk": "workspace:*",
     "jose": "^5.9.0"
   },
   "devDependencies": {
@@ -1255,7 +1255,7 @@ export default defineConfig([
     dts: true,
     clean: true,
     sourcemap: true,
-    external: ['react', 'react-dom', '@nativeguard/passkey'],
+    external: ['react', 'react-dom', '@swepay/native-passly-sdk'],
     esbuildOptions(opts) {
       opts.banner = { js: "'use client';" };
     }
@@ -1266,7 +1266,7 @@ export default defineConfig([
     format: ['esm', 'cjs'],
     dts: true,
     sourcemap: true,
-    external: ['jose', '@nativeguard/passkey']
+    external: ['jose', '@swepay/native-passly-sdk']
   }
 ]);
 ```
@@ -1277,7 +1277,7 @@ export default defineConfig([
 // packages/react/src/providers/PasskeyProvider.tsx
 'use client';
 import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { NativePasskeyClient, type NativePasskeyConfig, type PasskeySupport } from '@nativeguard/passkey';
+import { NativePasskeyClient, type NativePasskeyConfig, type PasskeySupport } from '@swepay/native-passly-sdk';
 
 interface PasskeyContextValue {
   client: NativePasskeyClient;
@@ -1320,7 +1320,7 @@ import {
   PasskeyError,
   type AuthenticateOptions, type AuthenticateResult,
   type RegisterPasskeyOptions, type RegisterResult
-} from '@nativeguard/passkey';
+} from '@swepay/native-passly-sdk';
 import { usePasskeyContext } from '../providers/PasskeyProvider';
 
 export function usePasskey() {
@@ -1368,7 +1368,7 @@ export function usePasskey() {
 // packages/react/src/hooks/usePasskeySupport.ts
 'use client';
 import { useEffect, useState } from 'react';
-import { NativePasskeyClient, type PasskeySupport } from '@nativeguard/passkey';
+import { NativePasskeyClient, type PasskeySupport } from '@swepay/native-passly-sdk';
 
 /** SSR-safe: retorna null durante hidratação */
 export function usePasskeySupport(): { support: PasskeySupport | null; isLoading: boolean } {
@@ -1389,7 +1389,7 @@ export function usePasskeySupport(): { support: PasskeySupport | null; isLoading
 // packages/react/src/hooks/usePasskeyCredentials.ts
 'use client';
 import { useCallback, useEffect, useState } from 'react';
-import type { PasskeyCredential } from '@nativeguard/passkey';
+import type { PasskeyCredential } from '@swepay/native-passly-sdk';
 import { usePasskeyContext } from '../providers/PasskeyProvider';
 
 export function usePasskeyCredentials(externalUserId: string, apiKey: string) {
@@ -1420,7 +1420,7 @@ export function usePasskeyCredentials(externalUserId: string, apiKey: string) {
 // packages/react/src/components/PasskeyButton.tsx
 'use client';
 import type { ComponentPropsWithoutRef } from 'react';
-import type { AuthenticateOptions, AuthenticateResult } from '@nativeguard/passkey';
+import type { AuthenticateOptions, AuthenticateResult } from '@swepay/native-passly-sdk';
 import { usePasskey } from '../hooks/usePasskey';
 import { usePasskeyContext } from '../providers/PasskeyProvider';
 
@@ -1461,7 +1461,7 @@ export function PasskeyButton({ options, onSuccess, onError, renderButton, child
 // packages/react/src/components/PasskeyRegisterButton.tsx
 'use client';
 import type { ComponentPropsWithoutRef } from 'react';
-import type { RegisterPasskeyOptions, RegisterResult } from '@nativeguard/passkey';
+import type { RegisterPasskeyOptions, RegisterResult } from '@swepay/native-passly-sdk';
 import { usePasskey } from '../hooks/usePasskey';
 import { usePasskeyContext } from '../providers/PasskeyProvider';
 
@@ -1495,7 +1495,7 @@ export function PasskeyRegisterButton({ registerOptions, onSuccess, onError, chi
 ```tsx
 // packages/react/src/components/PasskeyManager.tsx
 'use client';
-import type { PasskeyCredential } from '@nativeguard/passkey';
+import type { PasskeyCredential } from '@swepay/native-passly-sdk';
 import { usePasskeyCredentials } from '../hooks/usePasskeyCredentials';
 
 interface PasskeyManagerProps {
@@ -1615,12 +1615,12 @@ export { PasskeyButton } from './components/PasskeyButton';
 export { PasskeyRegisterButton } from './components/PasskeyRegisterButton';
 export { PasskeyManager } from './components/PasskeyManager';
 
-// Re-export do core — consumer instala apenas @nativeguard/passkey-react
-export { NativePasskeyClient, PasskeyError } from '@nativeguard/passkey';
+// Re-export do core — consumer instala apenas @swepay/native-passly-react
+export { NativePasskeyClient, PasskeyError } from '@swepay/native-passly-sdk';
 export type {
   NativePasskeyConfig, RegisterPasskeyOptions, AuthenticateOptions,
   RegisterResult, AuthenticateResult, PasskeyCredential, PasskeySupport, PasskeyErrorCode
-} from '@nativeguard/passkey';
+} from '@swepay/native-passly-sdk';
 ```
 
 ---
@@ -1640,7 +1640,7 @@ export type {
     "start": "next start"
   },
   "dependencies": {
-    "@nativeguard/passkey-react": "workspace:*",
+    "@swepay/native-passly-react": "workspace:*",
     "next": "^15.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -1657,7 +1657,7 @@ export type {
 
 ```tsx
 // apps/demo-nextjs/app/layout.tsx
-import { PasskeyProvider } from '@nativeguard/passkey-react';
+import { PasskeyProvider } from '@swepay/native-passly-react';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -1680,7 +1680,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 ```typescript
 // apps/demo-nextjs/app/api/auth/passkey/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { PasskeyVerifier } from '@nativeguard/passkey-react/server';
+import { PasskeyVerifier } from '@swepay/native-passly-react/server';
 import { cookies } from 'next/headers';
 import { SignJWT } from 'jose';
 
@@ -1844,9 +1844,9 @@ pnpm publish
 
 5. **`jose` no server bundle** — `jose` é a única dependência com suporte nativo a Edge Runtime. Não usar `jsonwebtoken` — quebra na Vercel Edge e Cloudflare Workers.
 
-6. **`fixed` no changeset** — os 3 pacotes versiona juntos. Nunca publicar `@nativeguard/passkey@1.1.0` com `@nativeguard/passkey-react@1.0.0`. O config `fixed` previne isso.
+6. **`fixed` no changeset** — os 3 pacotes versiona juntos. Nunca publicar `@swepay/native-passly-sdk@1.1.0` com `@swepay/native-passly-react@1.0.0`. O config `fixed` previne isso.
 
-7. **Re-exports no barrel** — `@nativeguard/passkey-angular` e `@nativeguard/passkey-react` reexportam todos os tipos do core no `public-api.ts` / `src/index.ts`. Consumers não precisam instalar `@nativeguard/passkey` separadamente.
+7. **Re-exports no barrel** — `@swepay/native-passly-angular` e `@swepay/native-passly-react` reexportam todos os tipos do core no `public-api.ts` / `src/index.ts`. Consumers não precisam instalar `@swepay/native-passly-sdk` separadamente.
 
 8. **`authenticatorAttachment: 'platform'`** — NUNCA omitir. Sem isso, o browser pode acionar chaves de segurança USB em vez de Face ID / fingerprint.
 

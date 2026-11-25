@@ -1,18 +1,18 @@
-# @nativeguard/passkey-angular
+# @swepay/native-passly-angular
 
 Módulo Angular, serviço, componentes e guard de rota sobre o cliente
-`@nativeguard/passkey`, com ponte nativa para WebView Flutter.
+`@swepay/native-passly-sdk`, com ponte nativa para WebView Flutter.
 
-- npm: [`@nativeguard/passkey-angular`](https://www.npmjs.com/package/@nativeguard/passkey-angular)
+- npm: [`@swepay/native-passly-angular`](https://www.npmjs.com/package/@swepay/native-passly-angular)
 - Código-fonte: [`packages/angular`](https://github.com/swepay/native-passkey-sdk/tree/main/packages/angular)
 
 ## Instalação
 
 ```bash
-pnpm add @nativeguard/passkey-angular
+pnpm add @swepay/native-passly-angular
 ```
 
-Instale apenas este pacote — o `@nativeguard/passkey` é reexportado
+Instale apenas este pacote — o `@swepay/native-passly-sdk` é reexportado
 automaticamente (`NativePasskeyClient`, `PasskeyError` e os tipos públicos).
 
 ## API pública
@@ -30,7 +30,7 @@ Exportado por `public-api.ts`:
 ## Exemplo mínimo
 
 ```ts
-import { NativePasskeyModule } from '@nativeguard/passkey-angular';
+import { NativePasskeyModule } from '@swepay/native-passly-angular';
 
 @NgModule({
   imports: [
@@ -41,7 +41,7 @@ export class AppModule {}
 ```
 
 ```ts
-import { NativePasskeyService } from '@nativeguard/passkey-angular';
+import { NativePasskeyService } from '@swepay/native-passly-angular';
 
 constructor(private readonly passkey: NativePasskeyService) {}
 

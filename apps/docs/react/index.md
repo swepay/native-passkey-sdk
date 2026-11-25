@@ -1,18 +1,18 @@
-# @nativeguard/passkey-react
+# @swepay/native-passly-react
 
 Componentes, hooks e integração com o Next.js App Router sobre o cliente
-`@nativeguard/passkey`.
+`@swepay/native-passly-sdk`.
 
-- npm: [`@nativeguard/passkey-react`](https://www.npmjs.com/package/@nativeguard/passkey-react)
+- npm: [`@swepay/native-passly-react`](https://www.npmjs.com/package/@swepay/native-passly-react)
 - Código-fonte: [`packages/react`](https://github.com/swepay/native-passkey-sdk/tree/main/packages/react)
 
 ## Instalação
 
 ```bash
-pnpm add @nativeguard/passkey-react
+pnpm add @swepay/native-passly-react
 ```
 
-Instale apenas este pacote — o `@nativeguard/passkey` é reexportado
+Instale apenas este pacote — o `@swepay/native-passly-sdk` é reexportado
 automaticamente (`NativePasskeyClient`, `PasskeyError` e os tipos públicos).
 
 ## API pública
@@ -33,7 +33,7 @@ Exportado por `src/server/index.ts` (uso em Route Handlers / Server Actions):
 ## Exemplo mínimo
 
 ```tsx
-import { PasskeyProvider, usePasskey } from '@nativeguard/passkey-react';
+import { PasskeyProvider, usePasskey } from '@swepay/native-passly-react';
 
 function LoginButton() {
   const { authenticate, isLoading, error } = usePasskey();

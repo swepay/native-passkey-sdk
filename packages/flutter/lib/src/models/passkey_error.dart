@@ -1,6 +1,6 @@
 /// Códigos de erro do fluxo de Passkey.
 ///
-/// Espelha `PasskeyErrorCode` do pacote `@nativeguard/passkey` (core TypeScript),
+/// Espelha `PasskeyErrorCode` do pacote `@swepay/native-passly-sdk` (core TypeScript),
 /// garantindo um contrato de erro idêntico entre web, Angular, React e Flutter.
 enum PasskeyErrorCode {
   /// Usuário cancelou a cerimônia de biometria (ou `NotAllowedError` na web).

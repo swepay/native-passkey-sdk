@@ -3,7 +3,7 @@ import {
   ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, inject, signal
 } from '@angular/core';
 import { NgIf } from '@angular/common';
-import type { AuthenticateOptions, AuthenticateResult, PasskeySupport, RegisterPasskeyOptions, RegisterResult } from '@nativeguard/passkey';
+import type { AuthenticateOptions, AuthenticateResult, PasskeySupport, RegisterPasskeyOptions, RegisterResult } from '@swepay/native-passly-sdk';
 import { NativePasskeyService } from '../../services/native-passkey.service';
 
 export type PasskeyButtonMode = 'authenticate' | 'register';

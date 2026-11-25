@@ -1,7 +1,7 @@
 // packages/react/src/hooks/usePasskey.test.tsx
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { faker } from '@faker-js/faker';
-import { NativePasskeyClient, PasskeyError } from '@nativeguard/passkey';
+import { NativePasskeyClient, PasskeyError } from '@swepay/native-passly-sdk';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { PasskeyProvider } from '../providers/PasskeyProvider';
 import { usePasskey } from './usePasskey';

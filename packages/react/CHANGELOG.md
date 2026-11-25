@@ -1,4 +1,4 @@
-# @nativeguard/passkey-react
+# @swepay/native-passly-react
 
 ## 1.1.0
 
@@ -17,17 +17,17 @@
 
 - 4dc2854: Bump runtime dependencies as part of the 2026-09 security dependency audit
   (`docs/security/dependency-audit-2026-09.md`): `jose` `^5.9.0` → `^5.10.0` in
-  `@nativeguard/passkey-react`, `tslib` `^2.3.0` → `^2.8.1` in `@nativeguard/passkey-angular`.
+  `@swepay/native-passly-react`, `tslib` `^2.3.0` → `^2.8.1` in `@swepay/native-passly-angular`.
   No public API changes.
 - Updated dependencies [e565dc1]
-  - @nativeguard/passkey@1.1.0
+  - @swepay/native-passly-sdk@1.1.0
 
 ## 1.0.2
 
 ### Patch Changes
 
 - Updated dependencies [f96a8f7]
-  - @nativeguard/passkey@1.0.2
+  - @swepay/native-passly-sdk@1.0.2
 
 ## 1.0.1
 
@@ -42,4 +42,4 @@
 
 - Updated dependencies [1b44bf4]
 - Updated dependencies [600eb8c]
-  - @nativeguard/passkey@1.0.1
+  - @swepay/native-passly-sdk@1.0.1

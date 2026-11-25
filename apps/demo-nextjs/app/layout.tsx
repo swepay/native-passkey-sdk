@@ -1,5 +1,5 @@
 // apps/demo-nextjs/app/layout.tsx
-import { PasskeyProvider } from '@nativeguard/passkey-react';
+import { PasskeyProvider } from '@swepay/native-passly-react';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

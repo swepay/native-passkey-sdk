@@ -1,6 +1,6 @@
 packages:
   - "packages/*"
-  # biblioteca Angular publicável (@nativeguard/passkey-angular) — fica aninhada
+  # biblioteca Angular publicável (@swepay/native-passly-angular) — fica aninhada
   # sob o workspace-root passkey-angular-workspace; precisa estar no workspace
   # para o Changesets gerenciar sua versão.
   - "packages/angular/projects/*"

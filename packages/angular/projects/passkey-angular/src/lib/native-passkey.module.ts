@@ -1,6 +1,6 @@
 // packages/angular/projects/passkey-angular/src/lib/native-passkey.module.ts
 import { ModuleWithProviders, NgModule } from '@angular/core';
-import type { NativePasskeyConfig } from '@nativeguard/passkey';
+import type { NativePasskeyConfig } from '@swepay/native-passly-sdk';
 import { NativePasskeyService } from './services/native-passkey.service';
 import { FlutterBridgeService } from './services/flutter-bridge.service';
 

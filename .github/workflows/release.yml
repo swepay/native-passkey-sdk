@@ -81,7 +81,7 @@ jobs:
       #         com os bumps de versão e changelogs gerados
       #   - Se o "Version Packages" PR foi mergeado (changesets consumidos):
       #       → Executa `pnpm changeset publish` (publica no npm)
-      #       → Cria tags git para cada pacote publicado (ex: @nativeguard/passkey@1.2.0)
+      #       → Cria tags git para cada pacote publicado (ex: @swepay/native-passly-sdk@1.2.0)
       # ────────────────────────────────────────────────────────────────────────
       - name: Create Release PR or Publish to npm
         id: changesets
@@ -95,7 +95,7 @@ jobs:
           # Título do PR de versão
           title: "chore(release): version packages"
         env:
-          # Token npm com permissão de publicar no escopo @nativeguard.
+          # Token npm com permissão de publicar no escopo @swepay.
           # `NPM_TOKEN` é a env que o changesets/action lê para decidir entre
           # token e OIDC trusted publishing — sem ela, ele cai no OIDC (que NÃO
           # cria pacote novo → E404). `NODE_AUTH_TOKEN` alimenta o .npmrc do

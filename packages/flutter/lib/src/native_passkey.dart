@@ -21,7 +21,7 @@ import 'webview/passkey_webview.dart';
 /// disponível, recorre ao **fallback WebView** (se `webFallbackUrl` foi
 /// configurado em [NativePasskeyConfig]).
 ///
-/// A API espelha o `NativePasskeyClient` do pacote `@nativeguard/passkey`.
+/// A API espelha o `NativePasskeyClient` do pacote `@swepay/native-passly-sdk`.
 class NativePasskey {
   /// Cria o cliente a partir de uma [config].
   NativePasskey(

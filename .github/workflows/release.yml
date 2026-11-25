@@ -17,7 +17,7 @@ jobs:
     permissions:
       contents: write       # para criar commits de versão e tags git
       pull-requests: write  # para abrir o PR "Version Packages"
-      id-token: write       # para npm provenance (--provenance)
+      id-token: write       # npm Trusted Publishing (OIDC) + provenance
 
     steps:
       # A política da enterprise desliga "Allow GitHub Actions to create and approve
@@ -52,10 +52,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Node 24 traz npm 11 (>= 11.5.1), requisito do Trusted Publishing (OIDC).
+          # Sem registry-url: o setup-node escreveria um .npmrc com _authToken vazio.
+          node-version: 24
           cache: pnpm
-          # Configura o registry para publicação autenticada
-          registry-url: https://registry.npmjs.org
 
       - name: Install dependencies
         # --no-frozen-lockfile: o `changeset version` bumpa as versões dos
@@ -82,6 +82,13 @@ jobs:
       #   - Se o "Version Packages" PR foi mergeado (changesets consumidos):
       #       → Executa `pnpm changeset publish` (publica no npm)
       #       → Cria tags git para cada pacote publicado (ex: @swepay/native-passly-sdk@1.2.0)
+      #
+      # Publicação por npm Trusted Publishing (OIDC), sem NPM_TOKEN: cada pacote
+      # @swepay/native-passly-* tem um Trusted Publisher apontando para
+      # swepay/native-passkey-sdk + release.yml. O `id-token: write` acima permite
+      # ao npm CLI trocar o token OIDC do run por uma credencial de publicação;
+      # provenance é gerada automaticamente nesse modo. Procedimento completo na
+      # skill `swepay-npm-publishing` do workspace.
       # ────────────────────────────────────────────────────────────────────────
       - name: Create Release PR or Publish to npm
         id: changesets
@@ -95,13 +102,10 @@ jobs:
           # Título do PR de versão
           title: "chore(release): version packages"
         env:
-          # Token npm com permissão de publicar no escopo @swepay.
-          # `NPM_TOKEN` é a env que o changesets/action lê para decidir entre
-          # token e OIDC trusted publishing — sem ela, ele cai no OIDC (que NÃO
-          # cria pacote novo → E404). `NODE_AUTH_TOKEN` alimenta o .npmrc do
-          # setup-node. Setamos as duas com o mesmo secret.
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # Sem NPM_TOKEN de propósito: o changesets/action só usa token quando a
+          # env existe; ausente, deixa o npm CLI publicar por OIDC. O OIDC não cria
+          # pacote novo (E404) — a primeira versão de um pacote sai com token
+          # temporário, da máquina do owner (skill swepay-npm-publishing).
           GITHUB_TOKEN: ${{ secrets.CHANGESETS_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
 
       # ─── Notificação de Release ──────────────────────────────────────────────

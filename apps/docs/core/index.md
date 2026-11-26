@@ -14,20 +14,36 @@ wrapper dedicado.
 pnpm add @swepay/native-passly-sdk
 ```
 
+Sem dependências em runtime. Distribuído em ESM (`dist/index.js`) e CJS
+(`dist/index.cjs`), com tipos `.d.ts`.
+
 ## API pública
 
-Exportado por `src/index.ts`:
+Tudo o que `src/index.ts` exporta:
 
-- `NativePasskeyClient` — cliente principal (`registerPasskey`, `authenticateWithPasskey`,
-  `registerWithRecoveryAssertion`).
-- `PasskeyError` — erro tipado por `PasskeyErrorCode`.
-- Tipos: `NativePasskeyConfig`, `RegisterPasskeyOptions`, `RegisterResult`,
-  `RegisterWithRecoveryAssertionOptions`, `AuthenticateOptions`, `AuthenticateResult`,
-  `PasskeyCredential`, `PasskeySupport`, `PasskeyErrorCode`.
+| Export | Tipo | Documentação |
+|--------|------|--------------|
+| `NativePasskeyClient` | classe | [Cliente](/core/client) |
+| `PasskeyError` | classe | [Tipos](/core/types#passkeyerror) |
+| `NativePasskeyConfig` | interface | [Tipos](/core/types#nativepasskeyconfig) |
+| `RegisterPasskeyOptions` | interface | [Tipos](/core/types#registerpasskeyoptions) |
+| `RegisterResult` | interface | [Tipos](/core/types#registerresult) |
+| `RegisterWithRecoveryAssertionOptions` | interface | [Tipos](/core/types#registerwithrecoveryassertionoptions) |
+| `AuthenticateOptions` | interface | [Tipos](/core/types#authenticateoptions) |
+| `AuthenticateResult` | interface | [Tipos](/core/types#authenticateresult) |
+| `PasskeyCredential` | interface | [Tipos](/core/types#passkeycredential) |
+| `PasskeySupport` | interface | [Tipos](/core/types#passkeysupport) |
+| `PasskeyErrorCode` | union de strings | [Referência de erros](/reference/errors) |
+
+::: info Utilitários internos
+As funções de base64url e de detecção de suporte existem no código, mas **não**
+são exportadas pelo pacote. Para detectar suporte, use
+[`NativePasskeyClient.isAvailable()`](/core/client#nativepasskeyclient-isavailable).
+:::
 
 ## Exemplo mínimo
 
-```ts
+```typescript
 import { NativePasskeyClient } from '@swepay/native-passly-sdk';
 
 const client = new NativePasskeyClient({ projectId: 'proj_xxx' });

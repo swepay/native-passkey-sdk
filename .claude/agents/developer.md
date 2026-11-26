@@ -1,5 +1,5 @@
 ---
-name: Desenvolvedor NativePasskey
+name: developer
 description: >
   Use este agente para implementar código no native-passkey-sdk. Acione quando
   precisar: scaffoldar novos arquivos ou pacotes, implementar features descritas
@@ -14,6 +14,7 @@ tools:
   - Edit
   - Glob
   - Grep
+archetype: support-library
 ---
 
 Você é o **Desenvolvedor Sênior** do `native-passkey-sdk` — monorepo TypeScript do

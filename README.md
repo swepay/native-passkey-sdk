@@ -1,15 +1,15 @@
 # native-passkey-sdk
 
-Monorepo do **NativePasskey SDK** — autenticacao WebAuthn/FIDO2 (Passkey) do ecossistema **Swepay / NativeGuard**, publicado sob o escopo `@nativeguard`.
+Monorepo do **NativePasskey SDK** — autenticacao WebAuthn/FIDO2 (Passkey) do ecossistema **Swepay / NativeGuard**, publicado sob o escopo `@swepay`.
 
 ## Visao Geral
 
 O SDK expoe quatro pacotes publicaveis que compartilham a mesma logica WebAuthn via camada de core, sem duplicacao de codigo entre frameworks.
 
 ```
-packages/core      → @nativeguard/passkey          (zero deps, TypeScript puro)     → npm
-packages/angular   → @nativeguard/passkey-angular   (Angular 21, ng-packagr)         → npm
-packages/react     → @nativeguard/passkey-react     (React 19 + Next.js 15, tsup)    → npm
+packages/core      → @swepay/native-passly-sdk          (zero deps, TypeScript puro)     → npm
+packages/angular   → @swepay/native-passly-angular   (Angular 21, ng-packagr)         → npm
+packages/react     → @swepay/native-passly-react     (React 19 + Next.js 15, tsup)    → npm
 packages/flutter   → native_passkey_flutter         (Flutter hibrido nativo+WebView) → pub.dev
 apps/demo-nextjs                                    (Next.js 15, nao publicado)
 ```
@@ -19,21 +19,21 @@ apps/demo-nextjs                                    (Next.js 15, nao publicado)
 ```
 native-passkey-sdk/
 ├── packages/
-│   ├── core/                           ← @nativeguard/passkey
+│   ├── core/                           ← @swepay/native-passly-sdk
 │   │   └── src/
 │   │       ├── client.ts               ← NativePasskeyClient
 │   │       ├── types.ts                ← Tipos publicos e DTOs
 │   │       ├── utils/base64url.ts      ← bufferToBase64Url, base64UrlToBuffer
 │   │       ├── utils/detection.ts      ← detectPasskeySupport (SSR-safe)
 │   │       └── index.ts
-│   ├── angular/                        ← @nativeguard/passkey-angular
+│   ├── angular/                        ← @swepay/native-passly-angular
 │   │   └── projects/passkey-angular/
 │   │       └── src/lib/
 │   │           ├── services/
 │   │           ├── components/
 │   │           ├── guards/
 │   │           └── native-passkey.module.ts
-│   └── react/                          ← @nativeguard/passkey-react
+│   └── react/                          ← @swepay/native-passly-react
 │       └── src/
 │           ├── providers/PasskeyProvider.tsx
 │           ├── hooks/
@@ -50,16 +50,16 @@ native-passkey-sdk/
 ### React / Next.js
 
 ```bash
-pnpm add @nativeguard/passkey-react
+pnpm add @swepay/native-passly-react
 ```
 
 ### Angular
 
 ```bash
-pnpm add @nativeguard/passkey-angular
+pnpm add @swepay/native-passly-angular
 ```
 
-> Os pacotes `@nativeguard/passkey-react` e `@nativeguard/passkey-angular` reexportam todos os tipos do core. Nao e necessario instalar `@nativeguard/passkey` separadamente.
+> Os pacotes `@swepay/native-passly-react` e `@swepay/native-passly-angular` reexportam todos os tipos do core. Nao e necessario instalar `@swepay/native-passly-sdk` separadamente.
 
 ### Flutter
 
@@ -77,7 +77,7 @@ Envolva sua aplicacao com `PasskeyProvider` no layout raiz:
 
 ```tsx
 // app/layout.tsx
-import { PasskeyProvider } from '@nativeguard/passkey-react';
+import { PasskeyProvider } from '@swepay/native-passly-react';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -99,7 +99,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 ```tsx
 'use client';
-import { PasskeyButton } from '@nativeguard/passkey-react';
+import { PasskeyButton } from '@swepay/native-passly-react';
 
 export function LoginPage() {
   return (
@@ -121,7 +121,7 @@ export function LoginPage() {
 
 ```tsx
 'use client';
-import { PasskeyRegisterButton } from '@nativeguard/passkey-react';
+import { PasskeyRegisterButton } from '@swepay/native-passly-react';
 
 export function RegisterPage() {
   return (
@@ -142,7 +142,7 @@ export function RegisterPage() {
 
 ```tsx
 'use client';
-import { usePasskey } from '@nativeguard/passkey-react';
+import { usePasskey } from '@swepay/native-passly-react';
 
 export function CustomButton() {
   const { authenticate, register, isLoading, error } = usePasskey();
@@ -159,7 +159,7 @@ export function CustomButton() {
 
 ```typescript
 // app/api/auth/passkey/route.ts
-import { PasskeyVerifier } from '@nativeguard/passkey-react/server';
+import { PasskeyVerifier } from '@swepay/native-passly-react/server';
 
 const verifier = new PasskeyVerifier({
   projectId: process.env.NPK_PROJECT_ID!,
@@ -179,7 +179,7 @@ export async function POST(request: Request) {
 
 ```typescript
 // app.module.ts
-import { NativePasskeyModule } from '@nativeguard/passkey-angular';
+import { NativePasskeyModule } from '@swepay/native-passly-angular';
 
 @NgModule({
   imports: [
@@ -195,7 +195,7 @@ export class AppModule {}
 ### Angular — Componente standalone
 
 ```typescript
-import { PasskeyButtonComponent } from '@nativeguard/passkey-angular';
+import { PasskeyButtonComponent } from '@swepay/native-passly-angular';
 
 @Component({
   standalone: true,
@@ -219,7 +219,7 @@ export class LoginComponent {
 ### Angular — Servico NativePasskeyService
 
 ```typescript
-import { NativePasskeyService } from '@nativeguard/passkey-angular';
+import { NativePasskeyService } from '@swepay/native-passly-angular';
 import { inject } from '@angular/core';
 
 export class MyComponent {
@@ -238,7 +238,7 @@ export class MyComponent {
 
 ```typescript
 import { Routes } from '@angular/router';
-import { passkeySupportedGuard } from '@nativeguard/passkey-angular';
+import { passkeySupportedGuard } from '@swepay/native-passly-angular';
 
 export const routes: Routes = [
   {
@@ -294,7 +294,7 @@ product — see ADR-0003; this SDK never imports it, it only accepts the resulti
 import { useFaceVerification } from '@swepay/biometrics-react';
 
 const { verify } = useFaceVerification({ purpose: 'recovery' });
-const assertion = await verify(); // opaque compact JWS — @nativeguard/passkey never decodes or stores it
+const assertion = await verify(); // opaque compact JWS — @swepay/native-passly-sdk never decodes or stores it
 ```
 
 **2. Exchange it for a new passkey.** Same shape as `registerPasskey`, minus
@@ -303,7 +303,7 @@ never from the caller:
 
 ```tsx
 'use client';
-import { usePasskey } from '@nativeguard/passkey-react';
+import { usePasskey } from '@swepay/native-passly-react';
 
 export function RecoverAccountButton({ assertion }: { assertion: string }) {
   const { registerWithRecoveryAssertion, isLoading } = usePasskey();
@@ -358,7 +358,7 @@ if (!result.success) {
 
 ## API de Referencia
 
-### Core — `@nativeguard/passkey`
+### Core — `@swepay/native-passly-sdk`
 
 | Export | Descricao |
 |--------|-----------|
@@ -436,20 +436,20 @@ pnpm install
 pnpm build
 
 # Build de pacote especifico
-pnpm --filter @nativeguard/passkey build
-pnpm --filter @nativeguard/passkey-angular build
-pnpm --filter @nativeguard/passkey-react build
+pnpm --filter @swepay/native-passly-sdk build
+pnpm --filter @swepay/native-passly-angular build
+pnpm --filter @swepay/native-passly-react build
 
 # Watch mode para desenvolvimento
-pnpm --filter @nativeguard/passkey dev
-pnpm --filter @nativeguard/passkey-react dev
+pnpm --filter @swepay/native-passly-sdk dev
+pnpm --filter @swepay/native-passly-react dev
 
 # Rodar demo Next.js
 pnpm --filter demo-nextjs dev
 
 # Testes
 pnpm test
-pnpm --filter @nativeguard/passkey test --coverage
+pnpm --filter @swepay/native-passly-sdk test --coverage
 
 # Typecheck
 pnpm typecheck

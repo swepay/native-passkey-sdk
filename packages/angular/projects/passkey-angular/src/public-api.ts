@@ -10,10 +10,10 @@ export type { FlutterBridgeMessage, FlutterChannelMessage } from './lib/services
 export type { PasskeyButtonMode } from './lib/components/passkey-button/passkey-button.component';
 export { passkeySupportedGuard } from './lib/guards/passkey-supported.guard';
 
-// Re-export do core — consumer instala apenas @nativeguard/passkey-angular
-export { NativePasskeyClient, PasskeyError } from '@nativeguard/passkey';
+// Re-export do core — consumer instala apenas @swepay/native-passly-angular
+export { NativePasskeyClient, PasskeyError } from '@swepay/native-passly-sdk';
 export type {
   NativePasskeyConfig, RegisterPasskeyOptions, AuthenticateOptions,
   RegisterResult, RegisterWithRecoveryAssertionOptions,
   AuthenticateResult, PasskeyCredential, PasskeySupport, PasskeyErrorCode
-} from '@nativeguard/passkey';
+} from '@swepay/native-passly-sdk';

@@ -1,7 +1,7 @@
 // packages/react/src/hooks/usePasskeySupport.ts
 'use client';
 import { useEffect, useState } from 'react';
-import { NativePasskeyClient, type PasskeySupport } from '@nativeguard/passkey';
+import { NativePasskeyClient, type PasskeySupport } from '@swepay/native-passly-sdk';
 
 /** SSR-safe: retorna null durante hidratação */
 export function usePasskeySupport(): { support: PasskeySupport | null; isLoading: boolean } {

@@ -9,7 +9,7 @@ export default defineConfig([
     dts: true,
     clean: true,
     sourcemap: true,
-    external: ['react', 'react-dom', '@nativeguard/passkey'],
+    external: ['react', 'react-dom', '@swepay/native-passly-sdk'],
     esbuildOptions(opts) {
       opts.banner = { js: "'use client';" };
     }
@@ -20,6 +20,6 @@ export default defineConfig([
     format: ['esm', 'cjs'],
     dts: true,
     sourcemap: true,
-    external: ['jose', '@nativeguard/passkey']
+    external: ['jose', '@swepay/native-passly-sdk']
   }
 ]);

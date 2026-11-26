@@ -1,58 +1,80 @@
-# @nativeguard/passkey-angular
+# @swepay/native-passly-angular
 
-Módulo Angular, serviço, componentes e guard de rota sobre o cliente
-`@nativeguard/passkey`, com ponte nativa para WebView Flutter.
+Módulo, serviço, componentes standalone e guard de rota sobre o cliente
+`@swepay/native-passly-sdk`, com ponte para WebView Flutter.
 
-- npm: [`@nativeguard/passkey-angular`](https://www.npmjs.com/package/@nativeguard/passkey-angular)
+- npm: [`@swepay/native-passly-angular`](https://www.npmjs.com/package/@swepay/native-passly-angular)
 - Código-fonte: [`packages/angular`](https://github.com/swepay/native-passkey-sdk/tree/main/packages/angular)
 
 ## Instalação
 
 ```bash
-pnpm add @nativeguard/passkey-angular
+pnpm add @swepay/native-passly-angular @swepay/native-passly-sdk
 ```
 
-Instale apenas este pacote — o `@nativeguard/passkey` é reexportado
-automaticamente (`NativePasskeyClient`, `PasskeyError` e os tipos públicos).
+`@swepay/native-passly-sdk` é peer dependency. Depois de instalado, você importa
+tudo — inclusive `NativePasskeyClient`, `PasskeyError` e os tipos do core — de
+`@swepay/native-passly-angular`.
 
 ## API pública
 
-Exportado por `public-api.ts`:
-
-- `NativePasskeyModule` e o token `NATIVE_PASSKEY_CONFIG`.
-- `NativePasskeyService` — serviço com os mesmos métodos do cliente core.
-- `FlutterBridgeService` — comunicação com o WebView nativo Flutter
-  (tipos `FlutterBridgeMessage`, `FlutterChannelMessage`).
-- `PasskeyButtonComponent`, `PasskeyManagerComponent` — componentes prontos
-  (tipo `PasskeyButtonMode`).
-- `passkeySupportedGuard` — guard de rota que verifica suporte à plataforma.
+| Export | Documentação |
+|--------|--------------|
+| `NativePasskeyModule`, `NATIVE_PASSKEY_CONFIG` | [Setup](/angular/setup) |
+| `NativePasskeyService` | [Serviço](/angular/service) |
+| `PasskeyButtonComponent`, `PasskeyButtonMode` | [Componentes](/angular/components#passkeybuttoncomponent) |
+| `PasskeyManagerComponent` | [Componentes](/angular/components#passkeymanagercomponent) |
+| `passkeySupportedGuard` | [Guard](/angular/guard) |
+| `FlutterBridgeService`, `FlutterBridgeMessage`, `FlutterChannelMessage` | [Ponte Flutter](/angular/flutter-bridge) |
+| `NativePasskeyClient`, `PasskeyError` e tipos | [Core](/core/client) |
 
 ## Exemplo mínimo
 
-```ts
-import { NativePasskeyModule } from '@nativeguard/passkey-angular';
+```typescript
+// src/app/app.config.ts
+import { ApplicationConfig, inject, provideAppInitializer } from '@angular/core';
+import { NativePasskeyService } from '@swepay/native-passly-angular';
 
-@NgModule({
-  imports: [
-    NativePasskeyModule.forRoot({ projectId: 'proj_xxx' }),
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideAppInitializer(() => {
+      inject(NativePasskeyService).configure({ projectId: 'proj_xxx' });
+    }),
   ],
-})
-export class AppModule {}
+};
 ```
 
-```ts
-import { NativePasskeyService } from '@nativeguard/passkey-angular';
+```typescript
+// src/app/login.component.ts
+import { Component, inject } from '@angular/core';
+import { NativePasskeyService } from '@swepay/native-passly-angular';
 
-constructor(private readonly passkey: NativePasskeyService) {}
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  template: `<button type="button" (click)="login()">Entrar com passkey</button>`,
+})
+export class LoginComponent {
+  private readonly passkey = inject(NativePasskeyService);
 
-async login() {
-  const result = await this.passkey.authenticateWithPasskey();
+  async login(): Promise<void> {
+    const result = await this.passkey.authenticateWithPasskey();
+    if (result.success) {
+      console.log('JWT:', result.assertionJwt);
+    }
+  }
 }
 ```
+
+::: warning
+`NativePasskeyModule.forRoot(config)` sozinho **não** configura o serviço. Veja
+[Setup](/angular/setup).
+:::
 
 ## Integração com Flutter
 
 Quando o app Angular roda dentro de um WebView Flutter (ver
-[`native_passkey_flutter`](/flutter/)), o `FlutterBridgeService` permite delegar
-a cerimônia de Passkey para o caminho nativo (Credential Manager/ASAuthorization)
-antes de recorrer ao WebAuthn do navegador.
+[`native_passkey_flutter`](/flutter/)), o `NativePasskeyService` envia o
+resultado de cada registro/autenticação ao Flutter pelo
+[`FlutterBridgeService`](/angular/flutter-bridge). Tutorial:
+[Angular PWA + Flutter WebView](/examples/angular-pwa-flutter).

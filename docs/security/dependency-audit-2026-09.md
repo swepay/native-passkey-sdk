@@ -19,7 +19,7 @@ via `pnpm-lock.yaml` (a maioria transitiva) e 2 diretamente em `packages/core/pa
 | `sharp` (2) | high | optionalDependency do `next` (`^0.34.3 \|\| ^0.35.4`) | runtime, app demo | **Corrigido** — resolvido automaticamente pelo bump do `next` |
 | `postcss` (4) | high | `next` (pin exato `8.4.31`) + `vite`/webpack toolchain | runtime (demo) / dev (angular, docs) | **Corrigido** — `pnpm.overrides["postcss"] = "8.5.28"` (também resolveu um conflito de peer com `@angular/build@21.2.24`, que exige `postcss@8.5.28` exato) |
 | `nanoid`, `browserslist`, `immutable` | high | transitivos do `next`/`postcss`/`sass` | runtime (demo) | **Corrigido** — dedupados para versão segura automaticamente pelo bump do `next`/`update` |
-| `@angular/core`, `@angular/common`, `@angular/compiler` (5–6 cada) | medium | dependência direta de `packages/angular` | runtime da lib publicável `@nativeguard/passkey-angular` (via `peerDependencies`) | **Corrigido** — `^21.0.0` → `^21.2.23` (patch dentro do major 21, GHSA exige apenas `>=21.2.20`) |
+| `@angular/core`, `@angular/common`, `@angular/compiler` (5–6 cada) | medium | dependência direta de `packages/angular` | runtime da lib publicável `@swepay/native-passly-angular` (via `peerDependencies`) | **Corrigido** — `^21.0.0` → `^21.2.23` (patch dentro do major 21, GHSA exige apenas `>=21.2.20`) |
 | `@angular/service-worker` (3) | high | idem | idem | **Corrigido** — mesmo bump, satisfaz `>=21.2.17` |
 | `hono`, `@hono/node-server`, `undici`, `ip-address` (25+12+1+2) | medium/high | `@angular/cli` → `@modelcontextprotocol/sdk` (dev-only, tooling do CLI) | dev, nunca publicado | **Corrigido** — resolvido pelo bump de `@angular/cli`/`@angular-devkit/build-angular` para `21.2.24` (nova versão do `@modelcontextprotocol/sdk` já traz `hono@4.13.8`, `@hono/node-server@2.1.1`, `undici@7.29.1`, `ip-address@10.7.2`) |
 | `tar`, `sigstore`, `@sigstore/core`, `@sigstore/verify`, `pacote`, `piscina`, `brace-expansion`, `fast-uri`, `js-yaml` (dev, via `@changesets/cli`), `qs`, `body-parser`, `http-proxy-middleware`, `webpack-dev-server`, `websocket-driver`, `ws`, `shell-quote`, `launch-editor`, `postcss-selector-parser`, `baseline-browser-mapping`, `turbo`, `@babel/core`, `@babel/plugin-transform-modules-systemjs` | high/critical (a maioria) | transitivos de `@angular/cli`/`@angular-devkit/build-angular` (`ng serve`/`ng build` toolchain) ou de `@changesets/cli` (`js-yaml` via `read-yaml-file`) | dev-only, nunca publicado nem executado em CI de produção | **Corrigido** — bump de `@angular/cli`, `@angular-devkit/build-angular`, `ng-packagr`, `@angular/compiler-cli` para `21.2.x` mais recente e `@changesets/cli` `^2.27.0`→`^2.31.1` já traz todas as versões corrigidas |
@@ -64,14 +64,14 @@ qualquer GitHub Action — para não reabrir os mesmos PRs supersedidos.
 `node_modules/@changesets/assemble-release-plan/dist/*.esm.js`, função `shouldBumpMajor`):
 
 `packages/angular/projects/passkey-angular/package.json` declara
-`"@nativeguard/passkey": "^1.0.2"` como **`peerDependencies`** (não `workspace:*`). O algoritmo
+`"@swepay/native-passly-sdk": "^1.0.2"` como **`peerDependencies`** (não `workspace:*`). O algoritmo
 de `determineDependents` do Changesets trata **qualquer** bump não-patch de uma dependência que
 seja consumida via `peerDependencies` como potencialmente *breaking* para quem a declara — por
 padrão (`onlyUpdatePeerDependentsWhenOutOfRange` não definido ⇒ `false`), ele força o
-dependente (`@nativeguard/passkey-angular`) para `major`, **mesmo que a nova versão
+dependente (`@swepay/native-passly-angular`) para `major`, **mesmo que a nova versão
 (`1.1.0`) ainda satisfaça o range declarado (`^1.0.2`)**. Como as três libs estão no mesmo grupo
 `"fixed"` em `.changeset/config.json`, `matchFixedConstraint` propaga esse `major` forçado para
-`@nativeguard/passkey` e `@nativeguard/passkey-react` também — transformando o changeset `minor`
+`@swepay/native-passly-sdk` e `@swepay/native-passly-react` também — transformando o changeset `minor`
 de `.changeset/recovery-assertion-registration.md` em `major` (`1.0.2 → 2.0.0`) para o grupo
 inteiro.
 
@@ -90,18 +90,18 @@ antes/depois:
 
 ```
 # antes (bug)
-@nativeguard/passkey        2.0.0 (major)
-@nativeguard/passkey-react  2.0.0 (major)
-@nativeguard/passkey-angular 2.0.0 (major)
+@swepay/native-passly-sdk        2.0.0 (major)
+@swepay/native-passly-react  2.0.0 (major)
+@swepay/native-passly-angular 2.0.0 (major)
 
 # depois (fix)
-@nativeguard/passkey        1.1.0 (minor)
-@nativeguard/passkey-react  1.1.0 (minor)
-@nativeguard/passkey-angular 1.1.0 (minor)
+@swepay/native-passly-sdk        1.1.0 (minor)
+@swepay/native-passly-react  1.1.0 (minor)
+@swepay/native-passly-angular 1.1.0 (minor)
 ```
 
-Nota de arquitetura fora de escopo desta PR: `@nativeguard/passkey` como `peerDependency` de
-`@nativeguard/passkey-angular` também contradiz o "consumidores instalam apenas este pacote"
+Nota de arquitetura fora de escopo desta PR: `@swepay/native-passly-sdk` como `peerDependency` de
+`@swepay/native-passly-angular` também contradiz o "consumidores instalam apenas este pacote"
 documentado em `.claude/CLAUDE.md` (o pacote deveria reexportar o core como dependência normal,
 não peer). Não alterado aqui para não misturar refactor de API com o bump de segurança
 (anti-padrão "agrupar upgrades não relacionados"); registrar como follow-up para o architect da
@@ -123,7 +123,7 @@ Adicionados testes de smoke:
   `PasskeyError('unknown_error', ...)`, erro de negócio retornado pelo client é propagado, e
   `clearError()` limpa o estado.
 
-7 testes novos, todos verdes (`pnpm --filter @nativeguard/passkey-react test`). Adicionado
+7 testes novos, todos verdes (`pnpm --filter @swepay/native-passly-react test`). Adicionado
 `@faker-js/faker` `^10.6.0` como devDependency do pacote (padrão `swepay-testing-quality`: faker
 por entidade, nunca literal ad-hoc). O gate agora é real — removendo os testes, `pnpm test`
 falha porque `packages/core` já teria zerado a cobertura mínima de 85% se aplicada aqui também
@@ -178,8 +178,8 @@ cobertura também em `packages/react`, já que agora há testes que os sustentam
 
 ## 9. Changesets adicionados
 
-- `.changeset/security-deps-2026-09.md` — `patch` para `@nativeguard/passkey-react` (bump do
-  `jose`) e `@nativeguard/passkey-angular` (bump do `tslib`); combinado com o changeset `minor`
+- `.changeset/security-deps-2026-09.md` — `patch` para `@swepay/native-passly-react` (bump do
+  `jose`) e `@swepay/native-passly-angular` (bump do `tslib`); combinado com o changeset `minor`
   pré-existente (`recovery-assertion-registration.md`), o próximo release continua saindo como
   `1.1.0` (o `minor` já vence).
 - `.changeset/security-deps-2026-09-private.md` — changeset vazio (`changeset add --empty`)

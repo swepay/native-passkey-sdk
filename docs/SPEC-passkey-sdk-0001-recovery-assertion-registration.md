@@ -36,7 +36,7 @@ implementá-lo — esta nota fecha esse gap no SDK.
 ## 2. Goals & Non-Goals · dono: `po`
 
 **Goals:**
-- Expor `registerWithRecoveryAssertion` no core (`@nativeguard/passkey`), no hook React
+- Expor `registerWithRecoveryAssertion` no core (`@swepay/native-passly-sdk`), no hook React
   (`usePasskey`) e no serviço Angular (`NativePasskeyService`), com o mesmo shape de chamada
   nas três camadas.
 - Reusar a cerimônia `navigator.credentials.create(...)` do `registerPasskey` — zero

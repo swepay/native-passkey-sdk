@@ -1,6 +1,6 @@
 // packages/react/src/components/PasskeyManager.tsx
 'use client';
-import type { PasskeyCredential } from '@nativeguard/passkey';
+import type { PasskeyCredential } from '@swepay/native-passly-sdk';
 import { usePasskeyCredentials } from '../hooks/usePasskeyCredentials';
 
 interface PasskeyManagerProps {

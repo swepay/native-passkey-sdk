@@ -3,7 +3,7 @@
   "changelog": "@changesets/cli/changelog",
   "commit": false,
   "fixed": [
-    ["@nativeguard/passkey", "@nativeguard/passkey-angular", "@nativeguard/passkey-react"]
+    ["@swepay/native-passly-sdk", "@swepay/native-passly-angular", "@swepay/native-passly-react"]
   ],
   "linked": [],
   "access": "public",

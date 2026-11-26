@@ -1,6 +1,6 @@
 // apps/demo-nextjs/app/api/auth/passkey/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { PasskeyVerifier } from '@nativeguard/passkey-react/server';
+import { PasskeyVerifier } from '@swepay/native-passly-react/server';
 import { cookies } from 'next/headers';
 import { SignJWT } from 'jose';
 

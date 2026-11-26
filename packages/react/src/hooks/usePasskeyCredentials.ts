@@ -1,7 +1,7 @@
 // packages/react/src/hooks/usePasskeyCredentials.ts
 'use client';
 import { useCallback, useEffect, useState } from 'react';
-import type { PasskeyCredential } from '@nativeguard/passkey';
+import type { PasskeyCredential } from '@swepay/native-passly-sdk';
 import { usePasskeyContext } from '../providers/PasskeyProvider';
 
 export function usePasskeyCredentials(externalUserId: string, apiKey: string) {

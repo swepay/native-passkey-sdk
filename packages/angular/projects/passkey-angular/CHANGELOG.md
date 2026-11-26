@@ -1,11 +1,35 @@
-# @nativeguard/passkey-angular
+# @swepay/native-passly-angular
+
+## 1.1.0
+
+### Minor Changes
+
+- e565dc1: Add `registerWithRecoveryAssertion` — registers a new passkey when the user lost their only
+  device, by trading a `purpose=Recovery` Native Biometrics assertion (an opaque, never-persisted
+  string) for a WebAuthn registration authorised by a short-lived, single-use recovery grant
+  (backend `SPEC-passkey-0002`). Exposed identically on the core client, the React `usePasskey`
+  hook and the Angular `NativePasskeyService`. Adds seven new `PasskeyErrorCode` values for the
+  RFC 9457 problem types this flow can return (`biometric_recovery_disabled`,
+  `invalid_biometric_assertion`, `expired_biometric_assertion`, `replayed_biometric_assertion`,
+  `biometric_purpose_mismatch`, `unknown_biometric_user`, `invalid_recovery_grant`).
+
+### Patch Changes
+
+- e048de3: Raise the Angular peer dependency floor to `^21.2.25`: `@angular/router` < 21.2.25 is
+  affected by GHSA-57xq-rjx2-v5xh and GHSA-62vg-58rm-qff7 (denial of service in SSR).
+  No public API changes. The remaining Dependabot alerts (2026-10) were dev-tooling only
+  and are fixed through root `pnpm.overrides` and devDependency bumps, which do not publish.
+- 4dc2854: Bump runtime dependencies as part of the 2026-09 security dependency audit
+  (`docs/security/dependency-audit-2026-09.md`): `jose` `^5.9.0` → `^5.10.0` in
+  `@swepay/native-passly-react`, `tslib` `^2.3.0` → `^2.8.1` in `@swepay/native-passly-angular`.
+  No public API changes.
 
 ## 1.0.2
 
 ### Patch Changes
 
 - Updated dependencies [f96a8f7]
-  - @nativeguard/passkey@1.0.2
+  - @swepay/native-passly-sdk@1.0.2
 
 ## 1.0.1
 
@@ -20,4 +44,4 @@
 
 - Updated dependencies [1b44bf4]
 - Updated dependencies [600eb8c]
-  - @nativeguard/passkey@1.0.1
+  - @swepay/native-passly-sdk@1.0.1

@@ -6,10 +6,10 @@ SDK Flutter **híbrido** de autenticação WebAuthn/FIDO2 (Passkey) do ecossiste
 Tenta a cerimônia **nativa** de Passkey (Android Credential Manager / iOS
 ASAuthorization) e, quando o autenticador de plataforma não está disponível,
 recorre automaticamente a um **fallback WebView** que carrega o app web
-(`@nativeguard/passkey-angular` ou `@nativeguard/passkey-react`).
+(`@swepay/native-passly-angular` ou `@swepay/native-passly-react`).
 
 Faz parte do monorepo [`native-passkey-sdk`](https://github.com/swepay/native-passkey-sdk),
-ao lado dos pacotes npm `@nativeguard/passkey`, `-angular` e `-react`, com os quais
+ao lado dos pacotes npm `@swepay/native-passly-sdk`, `-angular` e `-react`, com os quais
 compartilha o mesmo contrato de API.
 
 ## Requisitos de plataforma

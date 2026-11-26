@@ -55,10 +55,10 @@ PasskeyApiClient _apiWith(Map<String, http.Response> routes) {
 }
 
 http.Response _json(Object body) => http.Response(
-  jsonEncode(body),
-  200,
-  headers: {'content-type': 'application/json'},
-);
+      jsonEncode(body),
+      200,
+      headers: {'content-type': 'application/json'},
+    );
 
 void main() {
   group('NativePasskey híbrido', () {

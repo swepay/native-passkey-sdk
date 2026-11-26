@@ -43,7 +43,7 @@ Segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e
 
 - Primeiro release do `native_passkey_flutter`.
 - API Dart unificada `NativePasskey` com `register`, `authenticate`, `isAvailable`,
-  `listCredentials` e `revokeCredential`, espelhando o contrato do `@nativeguard/passkey`.
+  `listCredentials` e `revokeCredential`, espelhando o contrato do `@swepay/native-passly-sdk`.
 - Estratégia **híbrida**: cerimônia WebAuthn nativa via Android Credential Manager
   (API 34+) e iOS ASAuthorization (iOS 16+), com fallback automático para WebView
   (`PasskeyWebView`) quando o autenticador de plataforma não está disponível.

@@ -1,44 +1,51 @@
-# @nativeguard/passkey-react
+# @swepay/native-passly-react
 
-Componentes, hooks e integração com o Next.js App Router sobre o cliente
-`@nativeguard/passkey`.
+Provider, hooks, componentes e verificação no servidor (Next.js App Router /
+Edge Runtime) sobre o cliente `@swepay/native-passly-sdk`.
 
-- npm: [`@nativeguard/passkey-react`](https://www.npmjs.com/package/@nativeguard/passkey-react)
+- npm: [`@swepay/native-passly-react`](https://www.npmjs.com/package/@swepay/native-passly-react)
 - Código-fonte: [`packages/react`](https://github.com/swepay/native-passkey-sdk/tree/main/packages/react)
 
 ## Instalação
 
 ```bash
-pnpm add @nativeguard/passkey-react
+pnpm add @swepay/native-passly-react
 ```
 
-Instale apenas este pacote — o `@nativeguard/passkey` é reexportado
+Instale apenas este pacote — o `@swepay/native-passly-sdk` é reexportado
 automaticamente (`NativePasskeyClient`, `PasskeyError` e os tipos públicos).
+
+## Dois entry points
+
+| Import | Ambiente | Conteúdo |
+|--------|----------|----------|
+| `@swepay/native-passly-react` | Client Components (bundle com banner `'use client'`) | Provider, hooks, componentes, reexports do core |
+| `@swepay/native-passly-react/server` | Route Handlers, Server Actions, Edge Runtime | `PasskeyVerifier`, `PasskeyVerifyResult` |
 
 ## API pública
 
-Exportado por `src/index.ts`:
-
-- `PasskeyProvider` — provider de contexto que instancia o `NativePasskeyClient`.
-- `usePasskey` — hook com `authenticate`, `register`, `registerWithRecoveryAssertion`,
-  `isLoading`, `error` e `clearError`.
-- `usePasskeySupport` — detecção de suporte à plataforma.
-- `usePasskeyCredentials` — listagem/gestão de credenciais registradas.
-- `PasskeyButton`, `PasskeyRegisterButton`, `PasskeyManager` — componentes prontos.
-
-Exportado por `src/server/index.ts` (uso em Route Handlers / Server Actions):
-
-- `PasskeyVerifier` e o tipo `PasskeyVerifyResult`.
+| Export | Documentação |
+|--------|--------------|
+| `PasskeyProvider` | [Setup](/react/setup) |
+| `usePasskey` | [Hooks](/react/hooks#usepasskey) |
+| `usePasskeySupport` | [Hooks](/react/hooks#usepasskeysupport) |
+| `usePasskeyCredentials` | [Hooks](/react/hooks#usepasskeycredentials) |
+| `PasskeyButton` | [Componentes](/react/components#passkeybutton) |
+| `PasskeyRegisterButton` | [Componentes](/react/components#passkeyregisterbutton) |
+| `PasskeyManager` | [Componentes](/react/components#passkeymanager) |
+| `PasskeyVerifier` (`/server`) | [Servidor](/react/server) |
+| `NativePasskeyClient`, `PasskeyError` e tipos | [Core](/core/client) |
 
 ## Exemplo mínimo
 
 ```tsx
-import { PasskeyProvider, usePasskey } from '@nativeguard/passkey-react';
+'use client';
+import { PasskeyProvider, usePasskey } from '@swepay/native-passly-react';
 
 function LoginButton() {
-  const { authenticate, isLoading, error } = usePasskey();
+  const { authenticate, isLoading } = usePasskey();
   return (
-    <button disabled={isLoading} onClick={() => authenticate()}>
+    <button type="button" disabled={isLoading} onClick={() => authenticate()}>
       Entrar com Passkey
     </button>
   );
@@ -52,3 +59,5 @@ export function App() {
   );
 }
 ```
+
+Tutorial completo: [Next.js App Router](/examples/nextjs-app-router).

@@ -1,7 +1,7 @@
 // packages/react/src/components/PasskeyButton.tsx
 'use client';
 import type { ComponentPropsWithoutRef } from 'react';
-import type { AuthenticateOptions, AuthenticateResult } from '@nativeguard/passkey';
+import type { AuthenticateOptions, AuthenticateResult } from '@swepay/native-passly-sdk';
 import { usePasskey } from '../hooks/usePasskey';
 import { usePasskeyContext } from '../providers/PasskeyProvider';
 

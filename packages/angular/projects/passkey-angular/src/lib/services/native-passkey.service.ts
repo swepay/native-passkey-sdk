@@ -10,16 +10,36 @@ import {
   type AuthenticateOptions,
   type AuthenticateResult,
   type PasskeyCredential
-} from '@nativeguard/passkey';
+} from '@swepay/native-passly-sdk';
 import { FlutterBridgeService } from './flutter-bridge.service';
+import { NATIVE_PASSKEY_CONFIG } from '../native-passkey.config';
 
 @Injectable({ providedIn: 'root' })
 export class NativePasskeyService {
-  private client!: NativePasskeyClient;
+  private clientInstance?: NativePasskeyClient;
   private readonly flutter = inject(FlutterBridgeService);
 
+  constructor() {
+    // Config de NativePasskeyModule.forRoot(config). Antes o token era registrado mas nunca lido,
+    // e toda chamada falhava com TypeError até alguém chamar configure().
+    const config = inject(NATIVE_PASSKEY_CONFIG, { optional: true });
+    if (config) {
+      this.configure(config);
+    }
+  }
+
   configure(config: NativePasskeyConfig): void {
-    this.client = new NativePasskeyClient(config);
+    this.clientInstance = new NativePasskeyClient(config);
+  }
+
+  private get client(): NativePasskeyClient {
+    if (!this.clientInstance) {
+      throw new Error(
+        'NativePasskeyService não está configurado: use NativePasskeyModule.forRoot(config) ' +
+        'ou chame configure(config) antes de usar o serviço.'
+      );
+    }
+    return this.clientInstance;
   }
 
   checkBiometricSupport(): Promise<PasskeySupport> {

@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 
+// Flutter >= 3.47 depreciou material.dart em favor de package:material_ui;
+// a migração é uma mudança de dependência do pacote e fica para PR próprio.
+// ignore: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 

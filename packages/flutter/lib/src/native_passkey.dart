@@ -21,16 +21,16 @@ import 'webview/passkey_webview.dart';
 /// disponível, recorre ao **fallback WebView** (se `webFallbackUrl` foi
 /// configurado em [NativePasskeyConfig]).
 ///
-/// A API espelha o `NativePasskeyClient` do pacote `@nativeguard/passkey`.
+/// A API espelha o `NativePasskeyClient` do pacote `@swepay/native-passly-sdk`.
 class NativePasskey {
   /// Cria o cliente a partir de uma [config].
   NativePasskey(
     this.config, {
     PasskeyApiClient? apiClient,
     NativePasskeyPlatform? platform,
-  }) : _api =
-           apiClient ?? PasskeyApiClient(projectBaseUrl: config.projectBaseUrl),
-       _platform = platform ?? NativePasskeyPlatform.instance;
+  })  : _api = apiClient ??
+            PasskeyApiClient(projectBaseUrl: config.projectBaseUrl),
+        _platform = platform ?? NativePasskeyPlatform.instance;
 
   /// Configuração ativa.
   final NativePasskeyConfig config;
@@ -68,8 +68,7 @@ class NativePasskey {
     BuildContext? context,
   }) async {
     try {
-      final useNative =
-          config.preferNative &&
+      final useNative = config.preferNative &&
           await _platform.isPlatformAuthenticatorAvailable();
 
       if (useNative) {
@@ -117,8 +116,7 @@ class NativePasskey {
       attestationObjectBase64Url:
           native['attestationObjectBase64Url'] as String,
       deviceName: options.deviceName,
-      transports:
-          (native['transports'] as List<dynamic>?)
+      transports: (native['transports'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList(growable: false) ??
           const ['internal'],
@@ -142,8 +140,7 @@ class NativePasskey {
     RegisterWithRecoveryAssertionOptions options,
   ) async {
     try {
-      final useNative =
-          config.preferNative &&
+      final useNative = config.preferNative &&
           await _platform.isPlatformAuthenticatorAvailable();
       if (!useNative) {
         return RegisterResult.failure(
@@ -190,8 +187,7 @@ class NativePasskey {
       attestationObjectBase64Url:
           native['attestationObjectBase64Url'] as String,
       deviceName: options.deviceName,
-      transports:
-          (native['transports'] as List<dynamic>?)
+      transports: (native['transports'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList(growable: false) ??
           const ['internal'],
@@ -211,8 +207,7 @@ class NativePasskey {
     BuildContext? context,
   }) async {
     try {
-      final useNative =
-          config.preferNative &&
+      final useNative = config.preferNative &&
           await _platform.isPlatformAuthenticatorAvailable();
 
       if (useNative) {

@@ -38,7 +38,7 @@ Mudanças de API pública exigem:
 
 O monorepo tem **dois fluxos de publicação independentes**:
 
-### npm — pacotes TypeScript (`@nativeguard/passkey`, `-angular`, `-react`)
+### npm — pacotes TypeScript (`@swepay/native-passly-sdk`, `-angular`, `-react`)
 
 Versionados em conjunto via **Changesets** (`fixed`):
 

@@ -6,7 +6,7 @@ import {
   type AuthenticateOptions, type AuthenticateResult,
   type RegisterPasskeyOptions, type RegisterResult,
   type RegisterWithRecoveryAssertionOptions
-} from '@nativeguard/passkey';
+} from '@swepay/native-passly-sdk';
 import { usePasskeyContext } from '../providers/PasskeyProvider';
 
 export function usePasskey() {

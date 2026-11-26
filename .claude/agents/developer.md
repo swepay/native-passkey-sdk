@@ -139,20 +139,20 @@ import { jwtVerify, createRemoteJWKSet } from 'jose';
 pnpm build
 
 # Build de pacote específico
-pnpm --filter @nativeguard/passkey build
-pnpm --filter @nativeguard/passkey-angular build
-pnpm --filter @nativeguard/passkey-react build
+pnpm --filter @swepay/native-passly-sdk build
+pnpm --filter @swepay/native-passly-angular build
+pnpm --filter @swepay/native-passly-react build
 
 # Watch mode para dev
-pnpm --filter @nativeguard/passkey dev
-pnpm --filter @nativeguard/passkey-react dev
+pnpm --filter @swepay/native-passly-sdk dev
+pnpm --filter @swepay/native-passly-react dev
 
 # Typecheck
 pnpm typecheck
 
 # Testes
 pnpm test
-pnpm --filter @nativeguard/passkey test --coverage
+pnpm --filter @swepay/native-passly-sdk test --coverage
 ```
 
 ## Padrões de Código
@@ -173,7 +173,7 @@ if (!window.PublicKeyCredential) {
 
 ```typescript
 // SEMPRE use as utils do core — nunca implemente inline
-import { bufferToBase64Url, base64UrlToBuffer } from '@nativeguard/passkey';
+import { bufferToBase64Url, base64UrlToBuffer } from '@swepay/native-passly-sdk';
 
 // Correto
 const encoded = bufferToBase64Url(credential.rawId);

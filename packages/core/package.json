@@ -1,6 +1,6 @@
 {
-  "name": "@nativeguard/passkey",
-  "version": "1.0.2",
+  "name": "@swepay/native-passly-sdk",
+  "version": "1.1.0",
   "description": "NativePasskey core client — WebAuthn/FIDO2 framework-agnostic",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -37,5 +37,10 @@
     "typescript": "~5.6.3",
     "vitest": "^4.1.12"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swepay/native-passkey-sdk.git",
+    "directory": "packages/core"
+  }
 }

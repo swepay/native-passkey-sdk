@@ -1,6 +1,6 @@
 {
-  "name": "@nativeguard/passkey-react",
-  "version": "1.0.2",
+  "name": "@swepay/native-passly-react",
+  "version": "1.1.0",
   "description": "NativePasskey React components, hooks and Next.js App Router integration",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -45,7 +45,7 @@
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
-    "@nativeguard/passkey": "workspace:*",
+    "@swepay/native-passly-sdk": "workspace:*",
     "jose": "^5.10.0"
   },
   "devDependencies": {
@@ -60,5 +60,10 @@
     "typescript": "~5.6.3",
     "vitest": "^4.1.12"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swepay/native-passkey-sdk.git",
+    "directory": "packages/react"
+  }
 }

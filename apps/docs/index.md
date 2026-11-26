@@ -7,23 +7,32 @@ hero:
   tagline: Um contrato de API único para Angular, React e Flutter — ecossistema Swepay/NativeGuard.
   actions:
     - theme: brand
-      text: Ver pacotes
-      link: /core/
+      text: Começar agora
+      link: /guide/quick-start
+    - theme: alt
+      text: Introdução
+      link: /guide/introduction
     - theme: alt
       text: GitHub
       link: https://github.com/swepay/native-passkey-sdk
 
 features:
-  - title: '@nativeguard/passkey (core)'
-    details: Cliente WebAuthn/FIDO2 framework-agnostic — registro, autenticação e recuperação por assertion.
+  - title: '@swepay/native-passly-sdk (core)'
+    details: Cliente WebAuthn/FIDO2 framework-agnostic, sem dependências em runtime — registro, autenticação, recuperação por asserção biométrica e gestão de credenciais.
     link: /core/
-  - title: '@nativeguard/passkey-react'
-    details: Provider, hooks (usePasskey, usePasskeySupport, usePasskeyCredentials) e componentes React/Next.js.
+  - title: '@swepay/native-passly-react'
+    details: PasskeyProvider, hooks (usePasskey, usePasskeySupport, usePasskeyCredentials), componentes prontos e PasskeyVerifier para o servidor (Next.js App Router / Edge).
     link: /react/
-  - title: '@nativeguard/passkey-angular'
-    details: Módulo Angular, serviço, componentes, guard de rota e ponte com WebView Flutter.
+  - title: '@swepay/native-passly-angular'
+    details: Módulo, NativePasskeyService, componentes standalone, guard de rota e ponte com o WebView Flutter.
     link: /angular/
   - title: native_passkey_flutter
-    details: SDK Flutter híbrido — cerimônia nativa (Credential Manager/ASAuthorization) com fallback WebView.
+    details: SDK Flutter híbrido — cerimônia nativa (Credential Manager / ASAuthorization) com fallback WebView.
     link: /flutter/
+  - title: Tutorial Next.js App Router
+    details: Do npm install ao cookie de sessão HttpOnly, verificando o JWT da passkey em um Route Handler.
+    link: /examples/nextjs-app-router
+  - title: Referência de erros
+    details: Todos os valores de PasskeyErrorCode, quando ocorrem e como tratar cada um.
+    link: /reference/errors
 ---

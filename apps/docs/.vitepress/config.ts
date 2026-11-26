@@ -28,15 +28,22 @@ export default defineConfig({
     logo: '/logo.svg',
     siteTitle: `NativePasskey <span style="font-size:0.7em;color:var(--vp-c-brand-1)">v${version}</span>`,
 
-    // NOTA: nav/sidebar cobrem hoje só as páginas que existem de fato
-    // (index + uma por pacote). Amplie aqui na mesma PR que adicionar
-    // o conteúdo correspondente — link para página inexistente não quebra
-    // o build (VitePress não valida nav/sidebar), mas quebra a navegação.
+    // NOTA: nav/sidebar cobrem apenas páginas que existem de fato em apps/docs.
+    // Ao adicionar uma página, inclua-a aqui na mesma PR (VitePress não valida
+    // links de nav/sidebar no build).
     nav: [
-      { text: 'Core', link: '/core/' },
-      { text: 'React', link: '/react/' },
-      { text: 'Angular', link: '/angular/' },
-      { text: 'Flutter', link: '/flutter/' },
+      { text: 'Guia', link: '/guide/introduction', activeMatch: '/guide/' },
+      {
+        text: 'Pacotes',
+        items: [
+          { text: 'Core', link: '/core/' },
+          { text: 'React', link: '/react/' },
+          { text: 'Angular', link: '/angular/' },
+          { text: 'Flutter', link: '/flutter/' },
+        ],
+      },
+      { text: 'Tutoriais', link: '/examples/nextjs-app-router', activeMatch: '/examples/' },
+      { text: 'Erros', link: '/reference/errors' },
       {
         text: `v${version}`,
         items: [
@@ -44,16 +51,16 @@ export default defineConfig({
             text: 'Pacotes npm',
             items: [
               {
-                text: '@nativeguard/passkey',
-                link: 'https://www.npmjs.com/package/@nativeguard/passkey',
+                text: '@swepay/native-passly-sdk',
+                link: 'https://www.npmjs.com/package/@swepay/native-passly-sdk',
               },
               {
-                text: '@nativeguard/passkey-angular',
-                link: 'https://www.npmjs.com/package/@nativeguard/passkey-angular',
+                text: '@swepay/native-passly-angular',
+                link: 'https://www.npmjs.com/package/@swepay/native-passly-angular',
               },
               {
-                text: '@nativeguard/passkey-react',
-                link: 'https://www.npmjs.com/package/@nativeguard/passkey-react',
+                text: '@swepay/native-passly-react',
+                link: 'https://www.npmjs.com/package/@swepay/native-passly-react',
               },
               {
                 text: 'native_passkey_flutter',
@@ -67,19 +74,71 @@ export default defineConfig({
 
     sidebar: [
       {
-        text: 'Pacotes',
+        text: 'Guia',
         items: [
-          { text: 'Core — @nativeguard/passkey', link: '/core/' },
-          { text: 'React — @nativeguard/passkey-react', link: '/react/' },
-          { text: 'Angular — @nativeguard/passkey-angular', link: '/angular/' },
-          { text: 'Flutter — native_passkey_flutter', link: '/flutter/' },
+          { text: 'Introdução', link: '/guide/introduction' },
+          { text: 'Instalação', link: '/guide/installation' },
+          { text: 'Quick start', link: '/guide/quick-start' },
         ],
+      },
+      {
+        text: 'Core — @swepay/native-passly-sdk',
+        collapsed: false,
+        items: [
+          { text: 'Visão geral', link: '/core/' },
+          { text: 'NativePasskeyClient', link: '/core/client' },
+          { text: 'Tipos', link: '/core/types' },
+        ],
+      },
+      {
+        text: 'React — @swepay/native-passly-react',
+        collapsed: false,
+        items: [
+          { text: 'Visão geral', link: '/react/' },
+          { text: 'PasskeyProvider', link: '/react/setup' },
+          { text: 'Hooks', link: '/react/hooks' },
+          { text: 'Componentes', link: '/react/components' },
+          { text: 'PasskeyVerifier (servidor)', link: '/react/server' },
+        ],
+      },
+      {
+        text: 'Angular — @swepay/native-passly-angular',
+        collapsed: false,
+        items: [
+          { text: 'Visão geral', link: '/angular/' },
+          { text: 'Setup', link: '/angular/setup' },
+          { text: 'NativePasskeyService', link: '/angular/service' },
+          { text: 'Componentes', link: '/angular/components' },
+          { text: 'Guard de rota', link: '/angular/guard' },
+          { text: 'Ponte Flutter', link: '/angular/flutter-bridge' },
+        ],
+      },
+      {
+        text: 'Flutter — native_passkey_flutter',
+        collapsed: false,
+        items: [
+          { text: 'Visão geral', link: '/flutter/' },
+          { text: 'Setup Android/iOS', link: '/flutter/setup' },
+          { text: 'API Dart', link: '/flutter/api' },
+          { text: 'Fallback WebView', link: '/flutter/webview-fallback' },
+        ],
+      },
+      {
+        text: 'Tutoriais',
+        items: [
+          { text: 'Next.js App Router', link: '/examples/nextjs-app-router' },
+          { text: 'Angular PWA + Flutter WebView', link: '/examples/angular-pwa-flutter' },
+        ],
+      },
+      {
+        text: 'Referência',
+        items: [{ text: 'Erros (PasskeyErrorCode)', link: '/reference/errors' }],
       },
     ],
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/swepay/native-passkey-sdk' },
-      { icon: 'npm', link: 'https://www.npmjs.com/package/@nativeguard/passkey' },
+      { icon: 'npm', link: 'https://www.npmjs.com/package/@swepay/native-passly-sdk' },
     ],
 
     footer: {
